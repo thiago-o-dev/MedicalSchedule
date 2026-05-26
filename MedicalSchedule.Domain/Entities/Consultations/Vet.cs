@@ -8,6 +8,7 @@ public class Vet : LifeCycleEntity
     public string Name { get; private set; } = string.Empty;
     public string Crm { get; private set; } = string.Empty;
     public string Specialty { get; private set; } = string.Empty;
+    public string Email { get; private set; } = string.Empty;
 
     private Vet() { }
 
