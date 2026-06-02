@@ -14,11 +14,15 @@ public class ConsultationConfiguration : IEntityTypeConfiguration<Consultation>
         builder.Property(c => c.PetId).IsRequired();
         builder.Property(c => c.VetId).IsRequired();
         builder.Property(c => c.ScheduledAt).IsRequired();
+        builder.Property(c => c.DurationMinutes).IsRequired();
         builder.Property(c => c.Status).IsRequired().HasConversion<string>();
+
+        builder.Ignore(c => c.EndsAt);
         builder.Property(c => c.Notes).HasMaxLength(1000);
         builder.Property(c => c.CreatedAt).IsRequired();
         builder.Property(c => c.UpdatedAt).IsRequired();
         builder.Property(c => c.IsActive).IsRequired();
+        builder.Property(c => c.RowVersion).IsRequired().IsConcurrencyToken();
 
         builder.HasOne<MedicalSchedule.Domain.Entities.Registration.Pet>()
             .WithMany()

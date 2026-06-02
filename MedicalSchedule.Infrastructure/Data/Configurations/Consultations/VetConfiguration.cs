@@ -17,6 +17,7 @@ public class VetConfiguration : IEntityTypeConfiguration<Vet>
         builder.Property(v => v.CreatedAt).IsRequired();
         builder.Property(v => v.UpdatedAt).IsRequired();
         builder.Property(v => v.IsActive).IsRequired();
+        builder.Property(v => v.RowVersion).IsRequired().IsConcurrencyToken();
 
         builder.HasIndex(v => v.Crm).IsUnique();
     }

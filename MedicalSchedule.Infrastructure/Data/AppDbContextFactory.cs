@@ -9,7 +9,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     public AppDbContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite("Data Source=medical_schedule.db")
+            .UseNpgsql("Host=localhost;Database=medical_schedule;Username=postgres;Password=postgres")
             .Options;
 
         return new AppDbContext(options, new ServiceCollection().BuildServiceProvider());

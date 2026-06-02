@@ -2,59 +2,53 @@ using FluentValidation;
 using MedicalSchedule.Application.Abstractions;
 using MedicalSchedule.Application.Exceptions;
 using MedicalSchedule.Application.ViewModels.Consultations;
-using MedicalSchedule.Domain.Entities.Consultations;
 using MedicalSchedule.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicalSchedule.Application.Features.Consultations.Appointments;
 
-public class ScheduleAppointmentCommandHandler(
-    IValidator<ScheduleAppointmentViewModel> validator,
+public class RescheduleAppointmentCommandHandler(
+    IValidator<RescheduleAppointmentViewModel> validator,
     IUnitOfWork unitOfWork)
 {
     public async Task<AppointmentViewModel> HandleAsync(
-        ScheduleAppointmentViewModel vm,
+        Guid id,
+        RescheduleAppointmentViewModel vm,
         CancellationToken cancellationToken = default)
     {
         var validation = await validator.ValidateAsync(vm, cancellationToken);
         if (!validation.IsValid)
             throw new BusinessLogicException(string.Join(" ", validation.Errors.Select(e => e.ErrorMessage)));
 
-        var petExists = await unitOfWork.Pets
-            .AnyAsync(p => p.Id == vm.PetId && p.IsActive, cancellationToken);
-        if (!petExists)
-            throw new NotFoundException($"Pet '{vm.PetId}' not found.");
+        var consultation = await unitOfWork.Consultations
+            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken)
+            ?? throw new NotFoundException($"Appointment '{id}' not found.");
 
-        var vetExists = await unitOfWork.Vets
-            .AnyAsync(v => v.Id == vm.VetId && v.IsActive, cancellationToken);
-        if (!vetExists)
-            throw new NotFoundException($"Vet '{vm.VetId}' not found.");
-
-        var newEndsAt = vm.ScheduledAt.AddMinutes(vm.DurationMinutes);
+        var newEndsAt = vm.NewScheduledAt.AddMinutes(vm.NewDurationMinutes);
 
         var vetConflict = await unitOfWork.Consultations
             .AnyAsync(c =>
-                c.VetId == vm.VetId &&
+                c.Id != id &&
+                c.VetId == consultation.VetId &&
                 c.Status == ConsultationStatus.Scheduled &&
                 c.ScheduledAt < newEndsAt &&
-                vm.ScheduledAt < c.ScheduledAt.AddMinutes(c.DurationMinutes),
+                vm.NewScheduledAt < c.ScheduledAt.AddMinutes(c.DurationMinutes),
                 cancellationToken);
         if (vetConflict)
             throw new ConflictException("This vet already has a consultation overlapping the requested time slot.");
 
         var petConflict = await unitOfWork.Consultations
             .AnyAsync(c =>
-                c.PetId == vm.PetId &&
+                c.Id != id &&
+                c.PetId == consultation.PetId &&
                 c.Status == ConsultationStatus.Scheduled &&
                 c.ScheduledAt < newEndsAt &&
-                vm.ScheduledAt < c.ScheduledAt.AddMinutes(c.DurationMinutes),
+                vm.NewScheduledAt < c.ScheduledAt.AddMinutes(c.DurationMinutes),
                 cancellationToken);
         if (petConflict)
             throw new ConflictException("This pet already has a consultation overlapping the requested time slot.");
 
-        var consultation = Consultation.Schedule(vm.PetId, vm.VetId, vm.ScheduledAt, vm.DurationMinutes, vm.Notes);
-
-        unitOfWork.Consultations.Add(consultation);
+        consultation.Reschedule(vm.NewScheduledAt, vm.NewDurationMinutes);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return AppointmentViewModel.From(consultation);
