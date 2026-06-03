@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:medical_schedule_app/repositories/auth_repository.dart';
 
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_input.dart';
@@ -15,27 +18,62 @@ class _SignupScreenState
     extends State<SignupScreen> {
   bool isOwner = true;
 
-  final nameController =
-      TextEditingController();
+  // do owner
+  final nameController = TextEditingController();
+  final documentController = TextEditingController();
+  final phoneController = TextEditingController();
+  // pro keycloak
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  final documentController =
-      TextEditingController();
+  bool loading = false;
 
-  final phoneController =
-      TextEditingController();
+  Future<void> register() async {
+    setState(() {
+      loading = true;
+    });
 
-  final emailController =
-      TextEditingController();
+    try {
+      final repository = AuthRepository();
 
+      await repository.register(
+        name: nameController.text,
+        document: documentController.text,
+        phone: phoneController.text,
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      if (mounted) {
+        if (isOwner){
+          context.go('/owner');
+        }else{
+          context.go('/vet');
+        }
+        
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    }
+
+    setState(() {
+      loading = false;
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: const Text('Sign Up')),
+      appBar: AppBar(title: const Text('Sign Up')),
       body: Padding(
-        padding:
-            const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ToggleButtons(
               isSelected: [
@@ -49,13 +87,11 @@ class _SignupScreenState
               },
               children: const [
                 Padding(
-                  padding:
-                      EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12),
                   child: Text('Owner'),
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12),
                   child: Text('Vet'),
                 ),
               ],
@@ -69,10 +105,8 @@ class _SignupScreenState
             ),
 
             CustomInput(
-              label:
-                  isOwner ? 'CPF' : 'CRMV',
-              controller:
-                  documentController,
+              label: isOwner ? 'CPF' : 'CRMV',
+              controller: documentController,
             ),
 
             CustomInput(
@@ -88,9 +122,18 @@ class _SignupScreenState
             const SizedBox(height: 24),
 
             CustomButton(
-              text: 'Register',
-              onPressed: () {},
+              text: loading ? 'Loading...' : 'Register',
+              onPressed: register,
             ),
+            
+            TextButton(
+                onPressed: () {
+                  context.pop();
+                },
+                child: const Text(
+                  'Return',
+                ),
+              ),
           ],
         ),
       ),

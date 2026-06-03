@@ -26,6 +26,30 @@ class AuthRepository {
     return model;
   }
 
+  Future<LoginResponseModel> register({
+    required String name,
+    required String document,
+    required String phone,
+    required String email,
+    required String password,
+  }) async {
+    // TODO: RegisterRequestModel
+    final request = LoginRequestModel(
+      email: email,
+      password: password,
+    );
+
+    final response = await _service.login(request);
+
+    final model = LoginResponseModel.fromJson(
+      response.data,
+    );
+
+    await TokenStorage.saveToken(model.token);
+
+    return model;
+  }
+
   Future<void> logout() async {
     await TokenStorage.clear();
   }

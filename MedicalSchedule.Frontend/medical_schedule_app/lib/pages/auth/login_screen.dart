@@ -89,10 +89,7 @@ class _LoginScreenState
               const SizedBox(height: 24),
 
               CustomButton(
-                text:
-                    loading
-                        ? 'Loading...'
-                        : 'Login',
+                text: loading ? 'Loading...' : 'Login',
                 onPressed: login,
               ),
 
