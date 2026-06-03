@@ -1,5 +1,4 @@
 using MedicalSchedule.Application.Abstractions;
-using MedicalSchedule.Application.Exceptions;
 using MedicalSchedule.Domain.Abstractions;
 using MedicalSchedule.Domain.Entities.Consultations;
 using MedicalSchedule.Domain.Entities.Registration;
@@ -32,21 +31,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IServiceProvid
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
             entry.Entity.ClearDomainEvents();
 
-        try
-        {
-            var result = await base.SaveChangesAsync(cancellationToken);
+        var result = await base.SaveChangesAsync(cancellationToken);
 
-            foreach (var @event in domainEvents)
-                await DispatchAsync(@event, cancellationToken);
+        foreach (var @event in domainEvents)
+            await DispatchAsync(@event, cancellationToken);
 
-            return result;
-        }
-        catch (DbUpdateConcurrencyException ex)
-        {
-            var entityName = ex.Entries.FirstOrDefault()?.Entity.GetType().Name ?? "entity";
-            throw new ConflictException(
-                $"The {entityName} was modified by another request. Please reload and try again.");
-        }
+        return result;
     }
 
     private async Task DispatchAsync(IDomainEvent domainEvent, CancellationToken cancellationToken)

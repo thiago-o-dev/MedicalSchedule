@@ -19,6 +19,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.CreatedAt).IsRequired();
         builder.Property(p => p.UpdatedAt).IsRequired();
         builder.Property(p => p.IsActive).IsRequired();
-        builder.Property(p => p.RowVersion).IsRequired().IsConcurrencyToken();
     }
 }

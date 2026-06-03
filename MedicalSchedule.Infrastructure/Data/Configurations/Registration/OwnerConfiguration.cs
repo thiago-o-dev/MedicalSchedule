@@ -18,7 +18,6 @@ public class OwnerConfiguration : IEntityTypeConfiguration<Owner>
         builder.Property(o => o.CreatedAt).IsRequired();
         builder.Property(o => o.UpdatedAt).IsRequired();
         builder.Property(o => o.IsActive).IsRequired();
-        builder.Property(o => o.RowVersion).IsRequired().IsConcurrencyToken();
 
         builder.HasIndex(o => o.Cpf).IsUnique();
 

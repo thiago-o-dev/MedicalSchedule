@@ -30,29 +30,16 @@ public class ScheduleAppointmentCommandHandler(
         if (!vetExists)
             throw new NotFoundException($"Vet '{vm.VetId}' not found.");
 
-        var newEndsAt = vm.ScheduledAt.AddMinutes(vm.DurationMinutes);
-
-        var vetConflict = await unitOfWork.Consultations
+        var conflictExists = await unitOfWork.Consultations
             .AnyAsync(c =>
                 c.VetId == vm.VetId &&
                 c.Status == ConsultationStatus.Scheduled &&
-                c.ScheduledAt < newEndsAt &&
-                vm.ScheduledAt < c.ScheduledAt.AddMinutes(c.DurationMinutes),
+                c.ScheduledAt == vm.ScheduledAt,
                 cancellationToken);
-        if (vetConflict)
-            throw new ConflictException("This vet already has a consultation overlapping the requested time slot.");
+        if (conflictExists)
+            throw new ConflictException("This vet already has a consultation scheduled at the specified time.");
 
-        var petConflict = await unitOfWork.Consultations
-            .AnyAsync(c =>
-                c.PetId == vm.PetId &&
-                c.Status == ConsultationStatus.Scheduled &&
-                c.ScheduledAt < newEndsAt &&
-                vm.ScheduledAt < c.ScheduledAt.AddMinutes(c.DurationMinutes),
-                cancellationToken);
-        if (petConflict)
-            throw new ConflictException("This pet already has a consultation overlapping the requested time slot.");
-
-        var consultation = Consultation.Schedule(vm.PetId, vm.VetId, vm.ScheduledAt, vm.DurationMinutes, vm.Notes);
+        var consultation = Consultation.Schedule(vm.PetId, vm.VetId, vm.ScheduledAt, vm.Notes);
 
         unitOfWork.Consultations.Add(consultation);
         await unitOfWork.SaveChangesAsync(cancellationToken);
