@@ -1,7 +1,7 @@
 import 'pet_species_enum.dart';
 
 class PetModel {
-  final String id;
+  final String? id;
   final String name;
   final PetSpecies species;
   final String breed;
@@ -9,13 +9,23 @@ class PetModel {
   final String ownerId;
 
   PetModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.species,
     required this.breed,
     required this.birthDate,
     required this.ownerId,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'species': species.index,
+      'breed': breed,
+      'birthDate': birthDate.toIso8601String(),
+      'ownerId': ownerId,
+    };
+  }
 
   factory PetModel.fromJson(Map<String, dynamic> json) {
     return PetModel(
@@ -26,15 +36,5 @@ class PetModel {
       birthDate: DateTime.parse(json['birthDate']),
       ownerId: json['ownerId'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'species': species.index,
-      'breed': breed,
-      'birthDate': birthDate.toIso8601String(),
-      'ownerId': ownerId,
-    };
   }
 }

@@ -1,12 +1,13 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class Env {
   static String get baseUrl {
-    // para rodar no android emulator
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5000';
+    // Flutter Web
+    if (kIsWeb) {
+      return 'https://localhost:7001';
     }
 
-    return 'http://localhost:5000';
+    // Android Emulator
+    return 'https://10.0.2.2:7001';
   }
 }
