@@ -6,6 +6,8 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -33,6 +35,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

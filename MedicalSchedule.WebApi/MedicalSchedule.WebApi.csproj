@@ -24,12 +24,11 @@
   <ItemGroup>
     <ProjectReference Include="..\MedicalSchedule.Application\MedicalSchedule.Application.csproj" />
     <ProjectReference Include="..\MedicalSchedule.Infrastructure\MedicalSchedule.Infrastructure.csproj" />
+    <ProjectReference Include="..\MedicalSchedule.ServiceDefaults\MedicalSchedule.ServiceDefaults.csproj" />
   </ItemGroup>
 
-	<Target Name="StartDependencies"
-			BeforeTargets="Build"
-			Condition="'$(Configuration)' == 'Debug'">
-		<Exec Command='docker compose -f "..\docker-compose.yml" up -d postgres keycloak' IgnoreExitCode="true" />
+	<Target Name="StartDependencies" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+		<Exec Command="docker compose -f &quot;..\docker-compose.yml&quot; up -d postgres keycloak" IgnoreExitCode="true" />
 	</Target>
 
 </Project>
