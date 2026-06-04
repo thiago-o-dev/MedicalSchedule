@@ -1,9 +1,0 @@
-<Solution>
-  <Project Path="docker-compose.dcproj">
-    <Build />
-  </Project>
-  <Project Path="MedicalSchedule.Application/MedicalSchedule.Application.csproj" />
-  <Project Path="MedicalSchedule.Domain/MedicalSchedule.Domain.csproj" />
-  <Project Path="MedicalSchedule.Infrastructure/MedicalSchedule.Infrastructure.csproj" />
-  <Project Path="MedicalSchedule.WebApi/MedicalSchedule.WebApi.csproj" />
-</Solution>
