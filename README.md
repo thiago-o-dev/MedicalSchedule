@@ -1,6 +1,6 @@
 # MedicalSchedule
 
-Sistema de agendamento de consultas veterinárias. Trabalho acadêmico com foco em DDD (Domain-Driven Design).
+Sistema de agendamento de consultas veterinárias. Trabalho acadêmico com foco em DDD (Domain-Driven Design) e microsserviços.
 
 ## Arquitetura
 
@@ -9,7 +9,7 @@ Clean Architecture com dois Bounded Contexts:
 - **Registration** — Cadastro de tutores (`Owner`) e pets (`Pet`)
 - **Consultations** — Cadastro de veterinários (`Vet`) e agendamento de consultas (`Appointment`)
 
-```
+```bash
 MedicalSchedule.Domain          → Entidades, eventos de domínio, abstrações
 MedicalSchedule.Application     → Use cases, ViewModels, validators, event handlers
 MedicalSchedule.Infrastructure  → EF Core, DbContext, DomainEventDispatcher
@@ -18,13 +18,16 @@ MedicalSchedule.Frontend        → (em desenvolvimento)
 ```
 
 ## Stack
-
 - .NET 10 / C# 13
+- Aspire (orchestrador)
 - EF Core 10 + SQLite
 - FluentValidation 11
 - Scrutor 5 (auto-registro de handlers)
-- JWT Bearer (temporário — Keycloak futuramente)
 - Scalar (documentação da API)
+
+### Microsserviços
+- Keycloak (auth)
+- Postgres
 
 ## Como rodar
 
@@ -33,10 +36,11 @@ MedicalSchedule.Frontend        → (em desenvolvimento)
 dotnet restore
 
 # Aplicar migrations (banco já criado se clonar com o .db)
+# Vou ver se posso deixar isso pelo orchestrador tbm
 dotnet ef database update --project MedicalSchedule.Infrastructure --startup-project MedicalSchedule.WebApi
 
 # Rodar a API
-dotnet run --project MedicalSchedule.WebApi
+dotnet run --project MedicalSchedule.AppHost
 ```
 
 A API sobe em `https://localhost:5001`. Documentação interativa em `/scalar/v1`.
