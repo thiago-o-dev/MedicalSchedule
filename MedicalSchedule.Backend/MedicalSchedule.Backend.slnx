@@ -16,7 +16,6 @@
   </Folder>
   <Folder Name="/src/Services/">
     <File Path="Services/README.md" />
-    <Project Path="Services/Licensing/Licensing.csproj" />
     <Project Path="Services/Notifications/Notifications.csproj" />
     <Project Path="Services/Payments/Payments.csproj" />
     <Project Path="Services/Scheduling/Scheduling.csproj" />

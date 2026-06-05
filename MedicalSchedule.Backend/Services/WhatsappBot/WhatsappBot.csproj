@@ -26,8 +26,13 @@
     <Folder Include="Features\" />
     <Folder Include="Infrastructure\External\" />
     <Folder Include="Infrastructure\Messaging\" />
-    <Folder Include="Infrastructure\Persistence\" />
+    <Folder Include="Infrastructure\Persistence\Commands\" />
+    <Folder Include="Infrastructure\Persistence\Queries\" />
     <Folder Include="Infrastructure\Redis\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

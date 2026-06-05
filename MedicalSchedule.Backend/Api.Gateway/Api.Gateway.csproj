@@ -18,4 +18,8 @@
     <Folder Include="ReverseProxy\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
+  </ItemGroup>
+
 </Project>

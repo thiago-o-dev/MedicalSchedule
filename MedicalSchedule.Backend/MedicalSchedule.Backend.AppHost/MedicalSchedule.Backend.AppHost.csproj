@@ -8,4 +8,19 @@
     <UserSecretsId>fba89e3b-e005-479f-957d-5fb3608bbbf6</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Keycloak" Version="13.4.2-preview.1.26303.6" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.4.2" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="13.4.2" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="13.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api.Gateway\Api.Gateway.csproj" />
+    <ProjectReference Include="..\Services\Notifications\Notifications.csproj" />
+    <ProjectReference Include="..\Services\Payments\Payments.csproj" />
+    <ProjectReference Include="..\Services\Scheduling\Scheduling.csproj" />
+    <ProjectReference Include="..\Services\WhatsappBot\WhatsappBot.csproj" />
+  </ItemGroup>
+
 </Project>
