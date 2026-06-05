@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MedicalSchedule.Backend.AppHost/MedicalSchedule.Backend.AppHost.csproj" />
+  <Project Path="MedicalSchedule.Backend.ServiceDefaults/MedicalSchedule.Backend.ServiceDefaults.csproj" />
+</Solution>
