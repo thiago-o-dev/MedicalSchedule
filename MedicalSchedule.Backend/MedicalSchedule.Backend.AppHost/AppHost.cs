@@ -10,6 +10,8 @@ var postgres = builder.AddPostgres("postgres", password: postgresPassword)
 
 var keycloakDb = postgres.AddDatabase("keycloak-db");
 
+var registryDb = postgres.AddDatabase("registry-db");
+
 var schedulingDb = postgres.AddDatabase("scheduling-db");
 
 var paymentsDb = postgres.AddDatabase("payments-db");
@@ -31,6 +33,10 @@ var keycloak = builder.AddKeycloak("keycloak", 8081)
 
 
 // Services
+var registry = 
+    builder.AddProject<Projects.Registry>("registry")
+        .WithReference(rabbitmq)
+        .WithReference(registryDb);
 
 var scheduling =
     builder.AddProject<Projects.Scheduling>("scheduling")
@@ -56,6 +62,7 @@ var whatsapp =
 
 var gateway =
     builder.AddProject<Projects.Api_Gateway>("gateway")
+        .WithReference(registry)
         .WithReference(scheduling)
         .WithReference(payments)
         .WithReference(notifications)

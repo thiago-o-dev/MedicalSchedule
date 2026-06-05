@@ -18,6 +18,7 @@
     <File Path="Services/README.md" />
     <Project Path="Services/Notifications/Notifications.csproj" />
     <Project Path="Services/Payments/Payments.csproj" />
+    <Project Path="Services/Registry/Registry.csproj" />
     <Project Path="Services/Scheduling/Scheduling.csproj" />
     <Project Path="Services/WhatsappBot/WhatsappBot.csproj" />
   </Folder>

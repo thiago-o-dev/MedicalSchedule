@@ -17,7 +17,6 @@
     <Folder Include="Contracts\Events\" />
     <Folder Include="Contracts\Responses\" />
     <Folder Include="Contracts\Requests\" />
-    <Folder Include="Domain\Entities\" />
     <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Exceptions\" />
     <Folder Include="Domain\Services\" />
@@ -33,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>
