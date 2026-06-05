@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Interceptors\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Transactions\" />
+  </ItemGroup>
+
 </Project>

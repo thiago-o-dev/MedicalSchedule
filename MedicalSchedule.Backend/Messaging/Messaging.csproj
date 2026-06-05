@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+    <Folder Include="EasyNetQ\" />
+    <Folder Include="Inbox\" />
+    <Folder Include="Outbox\" />
+  </ItemGroup>
+
 </Project>

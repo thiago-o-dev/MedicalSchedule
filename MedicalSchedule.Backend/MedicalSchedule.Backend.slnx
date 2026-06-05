@@ -1,4 +1,29 @@
 <Solution>
-  <Project Path="MedicalSchedule.Backend.AppHost/MedicalSchedule.Backend.AppHost.csproj" />
-  <Project Path="MedicalSchedule.Backend.ServiceDefaults/MedicalSchedule.Backend.ServiceDefaults.csproj" />
+  <Folder Name="/docker/" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/Aspire/">
+    <Project Path="MedicalSchedule.Backend.AppHost/MedicalSchedule.Backend.AppHost.csproj" />
+    <Project Path="MedicalSchedule.Backend.ServiceDefaults/MedicalSchedule.Backend.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="Caching/Caching.csproj" />
+    <Project Path="Messaging/Messaging.csproj" />
+    <Project Path="Observability/Observability.csproj" />
+    <Project Path="Persistence/Persistence.csproj" />
+  </Folder>
+  <Folder Name="/src/Gateway/">
+    <Project Path="Api.Gateway/Api.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/">
+    <File Path="Services/README.md" />
+    <Project Path="Services/Licensing/Licensing.csproj" />
+    <Project Path="Services/Notifications/Notifications.csproj" />
+    <Project Path="Services/Payments/Payments.csproj" />
+    <Project Path="Services/Scheduling/Scheduling.csproj" />
+    <Project Path="Services/WhatsappBot/WhatsappBot.csproj" />
+  </Folder>
+  <Folder Name="/src/SharedKernel/">
+    <Project Path="SharedKernel/SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
 </Solution>

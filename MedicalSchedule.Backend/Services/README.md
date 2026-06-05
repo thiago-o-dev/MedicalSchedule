@@ -3,10 +3,10 @@
 | Folder         | Purpose                  |
 | -------------- | ------------------------ |
 | Api            | HTTP layer               |
-| Features       | application use cases    |
-| Domain         | business rules           |
-| Infrastructure | external implementations |
 | Contracts      | external messages        |
+| Domain         | business rules           |
+| Features       | application use cases    |
+| Infrastructure | external implementations |
 
 # Api/
 Transport only.

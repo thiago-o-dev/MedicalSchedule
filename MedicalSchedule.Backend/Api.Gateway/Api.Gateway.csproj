@@ -10,4 +10,12 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aggregations\" />
+    <Folder Include="Authentication\" />
+    <Folder Include="MiddleWare\" />
+    <Folder Include="RateLimiting\" />
+    <Folder Include="ReverseProxy\" />
+  </ItemGroup>
+
 </Project>
