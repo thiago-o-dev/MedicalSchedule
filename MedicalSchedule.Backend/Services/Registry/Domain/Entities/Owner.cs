@@ -1,7 +1,7 @@
-using MedicalSchedule.Domain.Abstractions;
-using MedicalSchedule.Domain.Exceptions;
+using SharedKernel.Abstractions;
+using SharedKernel.Exceptions;
 
-namespace MedicalSchedule.Domain.Entities.Registration;
+namespace Registry.Domain.Entities;
 
 public class Owner : LifeCycleEntity
 {

@@ -101,6 +101,20 @@ Used when logic:
 Example:
 - schedule conflict resolution
 
+SERVICES OWN BUSINESS ABSTRACTIONS
+
+Examples:
+- IAppointmentRepository
+- IPaymentProvider
+- ILicensingPort
+
+These belong INSIDE THE SERVICE
+
+because they describe:
+- business intent,
+- service requirements,
+- domain operations.
+
 # Infrastructure/
 External world implementations.
 
