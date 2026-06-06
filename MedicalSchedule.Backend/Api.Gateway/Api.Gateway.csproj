@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Aggregations\" />
+    <Folder Include="Authentication\" />
+    <Folder Include="MiddleWare\" />
+    <Folder Include="RateLimiting\" />
+    <Folder Include="ReverseProxy\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

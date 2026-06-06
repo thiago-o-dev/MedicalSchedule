@@ -1,0 +1,1 @@
+﻿Controls entity creations and updates

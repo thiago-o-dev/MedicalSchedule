@@ -1,6 +1,0 @@
-@MedicalSchedule.WebApi_HostAddress = http://localhost:5110
-
-GET {{MedicalSchedule.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
