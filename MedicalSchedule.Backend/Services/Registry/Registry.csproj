@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,20 +19,19 @@
     <Folder Include="Contracts\Events\" />
     <Folder Include="Contracts\Requests\" />
     <Folder Include="Contracts\Responses\" />
-    <Folder Include="Domain\Events\" />
-    <Folder Include="Domain\Exceptions\" />
-    <Folder Include="Domain\Policies\" />
     <Folder Include="Domain\Services\" />
-    <Folder Include="Domain\ValueObjects\" />
-    <Folder Include="Features\" />
+    <Folder Include="Features\Shared\" />
     <Folder Include="Infrastructure\External\" />
     <Folder Include="Infrastructure\Messaging\" />
-    <Folder Include="Infrastructure\Persistence\" />
+    <Folder Include="Infrastructure\Persistence\Configurations\" />
+    <Folder Include="Infrastructure\Persistence\Repositories\" />
     <Folder Include="Infrastructure\Redis\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

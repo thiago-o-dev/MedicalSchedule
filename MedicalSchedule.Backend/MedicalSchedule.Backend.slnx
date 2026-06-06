@@ -6,6 +6,7 @@
     <Project Path="MedicalSchedule.Backend.ServiceDefaults/MedicalSchedule.Backend.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/src/BuildingBlocks/">
+    <File Path="README.md" />
     <Project Path="Caching/Caching.csproj" />
     <Project Path="Messaging/Messaging.csproj" />
     <Project Path="Observability/Observability.csproj" />

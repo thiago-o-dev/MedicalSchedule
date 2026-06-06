@@ -1,4 +1,4 @@
-﻿namespace Registry.Features.Vet;
+﻿namespace Registry.Features;
 
 public class CreateVet
 {

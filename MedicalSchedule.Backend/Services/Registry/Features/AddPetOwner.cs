@@ -1,4 +1,4 @@
-﻿namespace Registry.Features.Pet;
+﻿namespace Registry.Features;
 
 public class AddPetOwner
 {
