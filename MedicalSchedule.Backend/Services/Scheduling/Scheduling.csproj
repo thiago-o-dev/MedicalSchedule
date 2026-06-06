@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
+    <PackageReference Include="Scrutor" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Persistence\Persistence.csproj" />
   </ItemGroup>
 
 </Project>
