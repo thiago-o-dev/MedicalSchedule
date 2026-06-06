@@ -46,4 +46,29 @@ public class Consultation : LifeCycleEntity
 
         return consultation;
     }
+
+    public void Cancel()
+    {
+        if (Status != ConsultationStatus.Scheduled)
+            throw new DomainValidationException("Only scheduled consultations can be cancelled.");
+
+        Status = ConsultationStatus.Cancelled;
+        Touch();
+
+        RaiseDomainEvent(new ConsultationCancelledEvent(Id, PetId, VetId, ScheduledAt));
+    }
+
+    public void Reschedule(DateTime newScheduledAt)
+    {
+        if (Status != ConsultationStatus.Scheduled)
+            throw new DomainValidationException("Only scheduled consultations can be rescheduled.");
+        if (newScheduledAt <= DateTime.UtcNow)
+            throw new DomainValidationException("Consultation must be rescheduled for a future date and time.");
+
+        var previous = ScheduledAt;
+        ScheduledAt = newScheduledAt;
+        Touch();
+
+        RaiseDomainEvent(new ConsultationRescheduledEvent(Id, PetId, VetId, previous, newScheduledAt));
+    }
 }

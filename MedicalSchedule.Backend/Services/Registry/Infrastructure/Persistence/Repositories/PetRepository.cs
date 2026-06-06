@@ -1,37 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Registry.Domain.Entities;
 using Registry.Features.Shared;
 
 namespace Registry.Infrastructure.Persistence.Repositories;
 
-public sealed class PetRepository : IPetRepository
+public sealed class PetRepository(RegistryDbContext dbContext) : IPetRepository
 {
-    private readonly RegistryDbContext _dbContext;
+    public async Task AddAsync(Pet pet, CancellationToken cancellationToken = default)
+        => await dbContext.Pets.AddAsync(pet, cancellationToken);
 
-    public PetRepository(
-        RegistryDbContext dbContext)
+    public Task UpdateAsync(Pet pet, CancellationToken cancellationToken = default)
     {
-        _dbContext = dbContext;
+        dbContext.Pets.Update(pet);
+        return Task.CompletedTask;
     }
 
-    public async Task AddAsync(Pet pet)
-    {
-        await _dbContext.Pets.AddAsync(pet);
-    }
-
-    public async Task UpdateAsync(Pet pet)
-    {
-        _dbContext.Pets.Update(pet);
-
-        await Task.CompletedTask;
-    }
-
-    public async Task<Pet> GetByIdAsync(Guid id)
-    {
-        var pet = await _dbContext.Pets
+    public Task<Pet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        => dbContext.Pets
             .Include(x => x.Ownerships)
-            .FirstOrDefaultAsync(x => x.Id == id);
-
-        return pet!;
-    }
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 }
