@@ -2,8 +2,8 @@ namespace SharedKernel.Abstractions;
 
 public abstract class LifeCycleEntity : BaseEntity
 {
-    public DateTime CreatedAt { get; protected set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; protected set; } = DateTime.Now;
+    public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; protected set; } = DateTime.UtcNow;
     public bool IsActive { get; protected set; } = true;
 
     public virtual void Deactivate()

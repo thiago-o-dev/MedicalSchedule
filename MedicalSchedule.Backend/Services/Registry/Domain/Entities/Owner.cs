@@ -26,7 +26,7 @@ public class Owner : LifeCycleEntity
         if (string.IsNullOrWhiteSpace(email))
             throw new DomainValidationException("Email is required.");
 
-        return new Owner
+        var owner = new Owner
         {
             Id = Guid.NewGuid(),
             Name = name.Trim(),
@@ -36,6 +36,10 @@ public class Owner : LifeCycleEntity
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+
+        // owner.RaiseDomainEvent(new OwnerCreatedDomainEvent(owner.Id));
+
+        return owner;
     }
 
     public void Update(string name, string phone, string email)

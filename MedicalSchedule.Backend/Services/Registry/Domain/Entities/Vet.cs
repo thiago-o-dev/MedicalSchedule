@@ -21,15 +21,15 @@ public class Vet : LifeCycleEntity
         if (string.IsNullOrWhiteSpace(specialty))
             throw new DomainValidationException("Specialty is required.");
 
-        return new Vet
+        var vet = new Vet
         {
             Id = Guid.NewGuid(),
             Name = name.Trim(),
             Crm = crm.Trim().ToUpperInvariant(),
-            Specialty = specialty.Trim(),
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            Specialty = specialty.Trim()
         };
+
+        return vet;
     }
 
     public void Update(string name, string specialty)
