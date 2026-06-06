@@ -1,12 +1,10 @@
-﻿using Registry.Domain.Entities;
+using Registry.Domain.Entities;
 
 namespace Registry.Features.Shared;
 
 public interface IPetRepository
 {
-    Task AddAsync(Pet pet);
-
-    Task UpdateAsync(Pet pet);
-
-    Task<Pet> GetByIdAsync(Guid id);
+    Task AddAsync(Pet pet, CancellationToken cancellationToken = default);
+    Task UpdateAsync(Pet pet, CancellationToken cancellationToken = default);
+    Task<Pet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

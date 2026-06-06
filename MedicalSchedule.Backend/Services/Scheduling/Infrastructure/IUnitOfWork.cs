@@ -1,14 +1,10 @@
-using MedicalSchedule.Domain.Entities.Consultations;
-using MedicalSchedule.Domain.Entities.Registration;
 using Microsoft.EntityFrameworkCore;
+using Scheduling.Domain.Entities;
 
-namespace SharedKernel.Abstractions;
+namespace Scheduling.Infrastructure;
 
-public interface IUnitOfWork
+public interface ISchedulingUnitOfWork
 {
-    DbSet<Owner> Owners { get; }
-    DbSet<Pet> Pets { get; }
-    DbSet<Vet> Vets { get; }
     DbSet<Consultation> Consultations { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

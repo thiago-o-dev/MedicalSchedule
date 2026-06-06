@@ -1,6 +1,6 @@
-using Registry.Domain.Events;
 using Registry.Domain.Enums;
-
+using Registry.Domain.Events;
+using Registry.Domain.Policies;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
 
@@ -73,9 +73,7 @@ public class Pet : LifeCycleEntity
         var ownership = _ownerships.FirstOrDefault(x => x.OwnerId == ownerId);
 
         if (ownership is null)
-        {
-            throw new InvalidOwnershipException("Ownership not found.");
-        }
+            throw new NotFoundException($"Ownership for owner '{ownerId}' not found.");
 
         PetOwnershipPolicy.EnsureCanRemoveOwner(
             _ownerships,
