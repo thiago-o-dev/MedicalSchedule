@@ -13,18 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Endpoints\" />
     <Folder Include="Api\Mapping\" />
     <Folder Include="Api\Middleware\" />
+    <Folder Include="Api\Responses\" />
+    <Folder Include="Api\Requests\" />
     <Folder Include="Contracts\Events\" />
     <Folder Include="Contracts\Requests\" />
     <Folder Include="Contracts\Responses\" />
     <Folder Include="Domain\Services\" />
-    <Folder Include="Features\Shared\" />
     <Folder Include="Infrastructure\External\" />
     <Folder Include="Infrastructure\Messaging\" />
-    <Folder Include="Infrastructure\Persistence\Configurations\" />
-    <Folder Include="Infrastructure\Persistence\Repositories\" />
+    <Folder Include="Infrastructure\Persistence\Migrations\" />
     <Folder Include="Infrastructure\Redis\" />
   </ItemGroup>
 
