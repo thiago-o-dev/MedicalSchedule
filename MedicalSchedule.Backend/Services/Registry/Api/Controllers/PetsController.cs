@@ -2,10 +2,39 @@
 
 namespace Registry.Api.Controllers;
 
-public class PetsController : Controller
+[Route("api/pets")]
+public sealed class PetsController : Controller
 {
-    public IActionResult Index()
+    private readonly PetService _service;
+
+    public PetsController(PetService service)
     {
-        return View();
+        _service = service;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(
+        RegisterPetRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _service.RegisterAsync(
+            request,
+            cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpPost("{petId:guid}/owners")]
+    public async Task<IActionResult> AddOwner(
+        Guid petId,
+        AddPetOwnerRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _service.AddOwnerAsync(
+            petId,
+            request,
+            cancellationToken);
+
+        return NoContent();
     }
 }
