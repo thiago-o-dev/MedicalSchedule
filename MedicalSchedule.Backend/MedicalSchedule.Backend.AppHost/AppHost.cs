@@ -15,6 +15,10 @@ var paymentsDb = postgres.AddDatabase("payments-db");
 
 // Infrastructure
 
+var mailhog = builder.AddContainer("mailhog", "mailhog/mailhog")
+    .WithEndpoint(port: 1025, targetPort: 1025, name: "smtp")
+    .WithEndpoint(port: 8025, targetPort: 8025, name: "http");
+
 var redis = builder.AddRedis("redis");
 
 var rabbitmq = builder.AddRabbitMQ("rabbitmq")

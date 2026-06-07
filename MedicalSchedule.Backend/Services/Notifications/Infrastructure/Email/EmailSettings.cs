@@ -9,4 +9,5 @@ public sealed class EmailSettings
     public string Username { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
     public string From { get; init; } = string.Empty;
+    public bool EnableSsl { get; init; } = true;
 }
