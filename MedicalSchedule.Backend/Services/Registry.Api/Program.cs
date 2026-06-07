@@ -1,10 +1,8 @@
-using BuildingBlocks.Messaging.Extensions;
-using BuildingBlocks.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Registry.Features.Shared;
-using Registry.Infrastructure.Persistence;
-using Registry.Infrastructure.Persistence.Repositories;
 using Scalar.AspNetCore;
+
+using Registry.Infrastructure.Configuration;
+using Registry.Infrastructure.Persistence;
 using SharedKernel.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,13 +18,7 @@ var connectionString = builder.Configuration.GetConnectionString("registry-db")
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbitmq")
     ?? throw new InvalidOperationException("Connection string 'rabbitmq' not configured.");
 
-builder.Services.AddPersistence<RegistryDbContext>(connectionString);
-builder.Services.AddMessaging(rabbitMqConnectionString);
-builder.Services.AddOutboxWorker<RegistryDbContext>();
-
-builder.Services.AddScoped<IPetRepository, PetRepository>();
-builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
-builder.Services.AddScoped<IVetRepository, VetRepository>();
+builder.Services.AddInfrastructure(connectionString, rabbitMqConnectionString);
 
 builder.Services.Scan(scan => scan
     .FromAssemblyOf<Program>()

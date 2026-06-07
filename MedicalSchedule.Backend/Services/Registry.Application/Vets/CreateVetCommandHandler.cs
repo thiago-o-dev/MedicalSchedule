@@ -1,6 +1,6 @@
 using BuildingBlocks.Persistence.Abstractions;
 using Registry.Domain.Entities;
-using Registry.Features.Shared;
+using Registry.Features.Abstractions;
 using SharedKernel.Abstractions;
 
 namespace Registry.Features.Vets;

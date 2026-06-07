@@ -1,4 +1,4 @@
-using Registry.Features.Shared;
+using Registry.Features.Abstractions;
 using SharedKernel.Abstractions;
 
 namespace Registry.Features.Pets;

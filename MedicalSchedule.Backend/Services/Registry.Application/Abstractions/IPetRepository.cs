@@ -1,6 +1,6 @@
 using Registry.Domain.Entities;
 
-namespace Registry.Features.Shared;
+namespace Registry.Features.Abstractions;
 
 public interface IPetRepository
 {

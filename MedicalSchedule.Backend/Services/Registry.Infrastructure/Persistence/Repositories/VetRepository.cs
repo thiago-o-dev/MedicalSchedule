@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Registry.Domain.Entities;
-using Registry.Features.Shared;
+using Registry.Features.Abstractions;
 
 namespace Registry.Infrastructure.Persistence.Repositories;
 

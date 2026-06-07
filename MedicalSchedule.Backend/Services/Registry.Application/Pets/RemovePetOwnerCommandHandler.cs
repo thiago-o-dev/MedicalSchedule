@@ -1,5 +1,5 @@
 using BuildingBlocks.Persistence.Abstractions;
-using Registry.Features.Shared;
+using Registry.Features.Abstractions;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
 
