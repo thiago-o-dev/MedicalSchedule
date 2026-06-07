@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Api.Gateway\Api.Gateway.csproj" />
     <ProjectReference Include="..\Services\Notifications\Notifications.csproj" />
     <ProjectReference Include="..\Services\Payments\Payments.csproj" />
-    <ProjectReference Include="..\Services\Registry\Registry.Api.csproj" />
+    <ProjectReference Include="..\Services\Registry.Api\Registry.Api.csproj" />
     <ProjectReference Include="..\Services\Scheduling\Scheduling.csproj" />
     <ProjectReference Include="..\Services\WhatsappBot\WhatsappBot.csproj" />
   </ItemGroup>
