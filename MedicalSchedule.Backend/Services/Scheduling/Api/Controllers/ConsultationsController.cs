@@ -11,6 +11,7 @@ namespace Scheduling.Api.Controllers;
 public sealed class ConsultationsController(
     ICommandHandler<ScheduleConsultationCommand, Guid> scheduleConsultation,
     ICommandHandler<CancelConsultationCommand> cancelConsultation,
+    ICommandHandler<RescheduleConsultationCommand> rescheduleConsultation,
     IQueryHandler<GetAllConsultationsQuery, IReadOnlyList<ConsultationResponse>> getAllConsultations,
     IQueryHandler<GetConsultationByIdQuery, ConsultationResponse> getConsultationById) : ControllerBase
 {
@@ -32,6 +33,19 @@ public sealed class ConsultationsController(
         CancellationToken cancellationToken)
     {
         await cancelConsultation.HandleAsync(new CancelConsultationCommand(consultationId), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPatch("{consultationId:guid}/reschedule")]
+    public async Task<IActionResult> Reschedule(
+        Guid consultationId,
+        [FromBody] RescheduleConsultationRequest request,
+        CancellationToken cancellationToken)
+    {
+        await rescheduleConsultation.HandleAsync(
+            new RescheduleConsultationCommand(consultationId, request.NewScheduledAt),
+            cancellationToken);
+
         return NoContent();
     }
 

@@ -15,6 +15,11 @@ public sealed class VetRepository(RegistryDbContext dbContext) : IVetRepository
         return Task.CompletedTask;
     }
 
+    public async Task<IReadOnlyList<Vet>> GetAllAsync(CancellationToken cancellationToken = default)
+        => await dbContext.Vets
+            .OrderBy(v => v.Name)
+            .ToListAsync(cancellationToken);
+
     public Task<Vet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => dbContext.Vets.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 }
