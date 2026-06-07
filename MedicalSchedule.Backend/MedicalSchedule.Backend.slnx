@@ -19,14 +19,9 @@
     <File Path="Services/README.md" />
     <Project Path="Services/Notifications/Notifications.csproj" />
     <Project Path="Services/Payments/Payments.csproj" />
+    <Project Path="Services/Registry/Registry.csproj" />
     <Project Path="Services/Scheduling/Scheduling.csproj" />
     <Project Path="Services/WhatsappBot/WhatsappBot.csproj" />
-  </Folder>
-  <Folder Name="/src/Services/Registry/">
-    <Project Path="Services/Registry.Api/Registry.Api.csproj" />
-    <Project Path="Services/Registry.Application/Registry.Application.csproj" Id="20141536-46b7-4605-bf08-550ff284ea4b" />
-    <Project Path="Services/Registry.Domain/Registry.Domain.csproj" />
-    <Project Path="Services/Registry.Infrastructure/Registry.Infrastructure.csproj" Id="c5430b44-d638-437d-9d5b-28321226ae05" />
   </Folder>
   <Folder Name="/src/SharedKernel/">
     <Project Path="SharedKernel/SharedKernel.csproj" />

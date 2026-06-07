@@ -13,10 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Api\Mapping\" />
+    <Folder Include="Api\Middleware\" />
+    <Folder Include="Infrastructure\Messaging\" />
+    <Folder Include="Infrastructure\Persistence\Migrations\" />
+    <Folder Include="Infrastructure\Redis\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\Persistence\Persistence.csproj" />
     <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
-    <ProjectReference Include="..\Registry.Infrastructure\Registry.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
