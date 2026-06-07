@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Controllers\" />
+    <Folder Include="Api\Endpoints\" />
     <Folder Include="Api\Mapping\" />
     <Folder Include="Api\Middleware\" />
     <Folder Include="Contracts\Events\" />

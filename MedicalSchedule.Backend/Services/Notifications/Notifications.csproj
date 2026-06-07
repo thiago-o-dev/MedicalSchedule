@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\" />
+    <Folder Include="Api\Endpoints\" />
+    <Folder Include="Api\Mapping\" />
+    <Folder Include="Api\Middleware\" />
     <Folder Include="Contracts\Requests\" />
     <Folder Include="Contracts\Responses\" />
   </ItemGroup>
