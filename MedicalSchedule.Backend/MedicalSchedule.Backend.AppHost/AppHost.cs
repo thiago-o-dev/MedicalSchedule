@@ -9,20 +9,16 @@ var postgres = builder.AddPostgres("postgres", password: postgresPassword)
     .WithDataVolume();
 
 var keycloakDb = postgres.AddDatabase("keycloak-db");
-
 var registryDb = postgres.AddDatabase("registry-db");
-
 var schedulingDb = postgres.AddDatabase("scheduling-db");
-
 var paymentsDb = postgres.AddDatabase("payments-db");
-
-var notificationsDb = postgres.AddDatabase("notifications-db");
 
 // Infrastructure
 
 var redis = builder.AddRedis("redis");
 
-var rabbitmq = builder.AddRabbitMQ("rabbitmq");
+var rabbitmq = builder.AddRabbitMQ("rabbitmq")
+    .WithManagementPlugin();
 
 var keycloak = builder.AddKeycloak("keycloak", 8081)
     .WithReference(keycloakDb)
@@ -30,35 +26,41 @@ var keycloak = builder.AddKeycloak("keycloak", 8081)
     .WithEnvironment("KEYCLOAK_ADMIN_PASSWORD", keycloakPassword)
     .WaitFor(postgres);
 
-
-
 // Services
-var registry = 
+
+var registry =
     builder.AddProject<Projects.Registry>("registry")
         .WithReference(rabbitmq)
-        .WithReference(registryDb);
+        .WithReference(registryDb)
+        .WaitFor(rabbitmq)
+        .WaitFor(registryDb);
 
 var scheduling =
     builder.AddProject<Projects.Scheduling>("scheduling")
         .WithReference(redis)
         .WithReference(rabbitmq)
-        .WithReference(schedulingDb);
+        .WithReference(schedulingDb)
+        .WaitFor(rabbitmq)
+        .WaitFor(schedulingDb);
 
 var payments =
     builder.AddProject<Projects.Payments>("payments")
         .WithReference(redis)
         .WithReference(rabbitmq)
-        .WithReference(paymentsDb);
+        .WithReference(paymentsDb)
+        .WaitFor(rabbitmq)
+        .WaitFor(paymentsDb);
 
 var notifications =
     builder.AddProject<Projects.Notifications>("notifications")
         .WithReference(rabbitmq)
-        .WithReference(notificationsDb);
+        .WaitFor(rabbitmq);
 
 var whatsapp =
     builder.AddProject<Projects.WhatsappBot>("whatsappbot")
         .WithReference(redis)
-        .WithReference(rabbitmq);
+        .WithReference(rabbitmq)
+        .WaitFor(rabbitmq);
 
 var gateway =
     builder.AddProject<Projects.Api_Gateway>("gateway")
