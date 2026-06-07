@@ -13,20 +13,22 @@ public sealed class NotificationSubscriptionsService(
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        // CancellationToken.None: subscriptions must live for the app lifetime,
+        // not just the startup phase. The startup token is cancelled after startup completes.
         await subscriber.SubscribeAsync<ConsultationScheduledEvent>(
             subscriptionId: "notifications.consultation-scheduled",
             handler: (ev, ct) => DispatchAsync<ConsultationScheduledEvent>(ev, ct),
-            cancellationToken);
+            CancellationToken.None);
 
         await subscriber.SubscribeAsync<ConsultationCancelledEvent>(
             subscriptionId: "notifications.consultation-cancelled",
             handler: (ev, ct) => DispatchAsync<ConsultationCancelledEvent>(ev, ct),
-            cancellationToken);
+            CancellationToken.None);
 
         await subscriber.SubscribeAsync<ConsultationRescheduledEvent>(
             subscriptionId: "notifications.consultation-rescheduled",
             handler: (ev, ct) => DispatchAsync<ConsultationRescheduledEvent>(ev, ct),
-            cancellationToken);
+            CancellationToken.None);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

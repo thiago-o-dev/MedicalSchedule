@@ -12,7 +12,7 @@ using Registry.Infrastructure.Persistence;
 namespace Registry.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(RegistryDbContext))]
-    [Migration("20260607011442_InitialCreate")]
+    [Migration("20260607020750_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -123,9 +123,6 @@ namespace Registry.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Species")
                         .HasColumnType("integer");
 
@@ -133,8 +130,6 @@ namespace Registry.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Pets");
                 });
@@ -203,13 +198,6 @@ namespace Registry.Infrastructure.Persistence.Migrations
                     b.ToTable("Vets");
                 });
 
-            modelBuilder.Entity("Registry.Domain.Entities.Pet", b =>
-                {
-                    b.HasOne("Registry.Domain.Entities.Owner", null)
-                        .WithMany("Pets")
-                        .HasForeignKey("OwnerId");
-                });
-
             modelBuilder.Entity("Registry.Domain.Entities.PetOwnership", b =>
                 {
                     b.HasOne("Registry.Domain.Entities.Owner", null)
@@ -223,11 +211,6 @@ namespace Registry.Infrastructure.Persistence.Migrations
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Registry.Domain.Entities.Owner", b =>
-                {
-                    b.Navigation("Pets");
                 });
 
             modelBuilder.Entity("Registry.Domain.Entities.Pet", b =>

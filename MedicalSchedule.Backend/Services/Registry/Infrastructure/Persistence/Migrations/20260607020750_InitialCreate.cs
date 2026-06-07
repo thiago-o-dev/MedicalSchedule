@@ -46,6 +46,24 @@ namespace Registry.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Species = table.Column<int>(type: "integer", nullable: false),
+                    Breed = table.Column<string>(type: "text", nullable: false),
+                    BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pets", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vets",
                 columns: table => new
                 {
@@ -61,30 +79,6 @@ namespace Registry.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vets", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pets",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Species = table.Column<int>(type: "integer", nullable: false),
-                    Breed = table.Column<string>(type: "text", nullable: false),
-                    BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    OwnerId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Pets_Owners_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Owners",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -131,11 +125,6 @@ namespace Registry.Infrastructure.Persistence.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pets_OwnerId",
-                table: "Pets",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Vets_Crm",
                 table: "Vets",
                 column: "Crm",
@@ -155,10 +144,10 @@ namespace Registry.Infrastructure.Persistence.Migrations
                 name: "Vets");
 
             migrationBuilder.DropTable(
-                name: "Pets");
+                name: "Owners");
 
             migrationBuilder.DropTable(
-                name: "Owners");
+                name: "Pets");
         }
     }
 }

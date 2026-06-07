@@ -12,7 +12,7 @@ using Scheduling.Infrastructure.Persistence;
 namespace Scheduling.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SchedulingDbContext))]
-    [Migration("20260607011353_InitialCreate")]
+    [Migration("20260607020756_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -61,9 +61,6 @@ namespace Scheduling.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<TimeSpan>("EstimatedDuration")
-                        .HasColumnType("interval");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
