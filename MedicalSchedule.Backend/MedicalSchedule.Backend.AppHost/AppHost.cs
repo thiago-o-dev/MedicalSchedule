@@ -22,7 +22,8 @@ var mailhog = builder.AddContainer("mailhog", "mailhog/mailhog")
 var redis = builder.AddRedis("redis");
 
 var rabbitmq = builder.AddRabbitMQ("rabbitmq")
-    .WithManagementPlugin();
+    .WithManagementPlugin()
+    .WithDataVolume();
 
 var keycloak = builder.AddKeycloak("keycloak", 8081)
     .WithReference(keycloakDb)
