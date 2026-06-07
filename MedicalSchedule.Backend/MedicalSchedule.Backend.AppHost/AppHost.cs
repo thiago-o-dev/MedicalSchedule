@@ -34,7 +34,7 @@ var keycloak = builder.AddKeycloak("keycloak", 8081)
 // Services
 
 var registry =
-    builder.AddProject<Projects.Registry>("registry")
+    builder.AddProject<Projects.Registry_Api>("registry")
         .WithReference(rabbitmq)
         .WithReference(registryDb)
         .WaitFor(rabbitmq)
