@@ -11,7 +11,7 @@ public sealed class CreateVetCommandHandler(
 {
     public async Task<Guid> HandleAsync(CreateVetCommand command, CancellationToken cancellationToken = default)
     {
-        var vet = Vet.Create(command.Name, command.Crm, command.Specialty);
+        var vet = Vet.Create(command.Name, command.Crm, command.Specialty, command.Email);
 
         await vetRepository.AddAsync(vet, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

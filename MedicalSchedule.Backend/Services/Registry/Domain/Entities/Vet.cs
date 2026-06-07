@@ -12,7 +12,7 @@ public class Vet : LifeCycleEntity
 
     private Vet() { }
 
-    public static Vet Create(string name, string crm, string specialty)
+    public static Vet Create(string name, string crm, string specialty, string email)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new DomainValidationException("Vet name is required.");
@@ -20,16 +20,17 @@ public class Vet : LifeCycleEntity
             throw new DomainValidationException("CRM is required.");
         if (string.IsNullOrWhiteSpace(specialty))
             throw new DomainValidationException("Specialty is required.");
+        if (string.IsNullOrWhiteSpace(email))
+            throw new DomainValidationException("Email is required.");
 
-        var vet = new Vet
+        return new Vet
         {
             Id = Guid.NewGuid(),
             Name = name.Trim(),
             Crm = crm.Trim().ToUpperInvariant(),
-            Specialty = specialty.Trim()
+            Specialty = specialty.Trim(),
+            Email = email.Trim()
         };
-
-        return vet;
     }
 
     public void Update(string name, string specialty)

@@ -17,7 +17,5 @@ public sealed class OwnerConfiguration : IEntityTypeConfiguration<Owner>
 
         builder.HasIndex(x => x.Cpf).IsUnique();
         builder.HasIndex(x => x.Email).IsUnique();
-
-        builder.Ignore(x => x.Pets);
     }
 }
