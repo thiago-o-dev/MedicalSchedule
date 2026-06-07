@@ -12,7 +12,7 @@ using Registry.Infrastructure.Persistence;
 namespace Registry.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(RegistryDbContext))]
-    [Migration("20260607013303_InitialCreate")]
+    [Migration("20260607020750_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
