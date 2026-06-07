@@ -13,9 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Endpoints\" />
-    <Folder Include="Api\Middleware\" />
-    <Folder Include="Api\Mapping\" />
     <Folder Include="Contracts\Events\" />
     <Folder Include="Contracts\Responses\" />
     <Folder Include="Contracts\Requests\" />

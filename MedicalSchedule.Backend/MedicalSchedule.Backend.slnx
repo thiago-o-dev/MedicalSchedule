@@ -19,9 +19,11 @@
     <File Path="Services/README.md" />
     <Project Path="Services/Notifications/Notifications.csproj" />
     <Project Path="Services/Payments/Payments.csproj" />
-    <Project Path="Services/Registry/Registry.csproj" />
     <Project Path="Services/Scheduling/Scheduling.csproj" />
     <Project Path="Services/WhatsappBot/WhatsappBot.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Registry/">
+    <Project Path="Services/Registry.Api/Registry.Api.csproj" />
   </Folder>
   <Folder Name="/src/SharedKernel/">
     <Project Path="SharedKernel/SharedKernel.csproj" />
