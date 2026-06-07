@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Registry.Features.Shared;
 using Registry.Infrastructure.Persistence;
 using Registry.Infrastructure.Persistence.Repositories;
+using Scalar.AspNetCore;
 using SharedKernel.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +51,10 @@ using (var scope = app.Services.CreateScope())
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
+{
     app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
