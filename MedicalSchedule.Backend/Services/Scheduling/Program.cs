@@ -1,5 +1,6 @@
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Persistence.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Scheduling.Infrastructure;
 using Scheduling.Infrastructure.Persistence;
 using SharedKernel.Abstractions;
@@ -36,6 +37,12 @@ builder.Services.Scan(scan => scan
         .WithScopedLifetime());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SchedulingDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.MapDefaultEndpoints();
 
