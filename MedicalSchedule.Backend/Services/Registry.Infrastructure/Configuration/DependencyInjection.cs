@@ -1,4 +1,4 @@
-﻿namespace Registry.Infrastructure;
+﻿namespace Registry.Infrastructure.Configuration;
 
 public static class DependencyInjection
 {
