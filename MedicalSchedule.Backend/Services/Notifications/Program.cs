@@ -25,7 +25,7 @@ builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 builder.Services.AddHttpClient<IRegistryClient, RegistryClient>(client =>
 {
-    client.BaseAddress = new Uri("http://registry");
+    client.BaseAddress = new Uri("https+http://registry");
 });
 
 builder.Services.AddScoped<IDomainEventHandler<ConsultationScheduledEvent>, ConsultationScheduledEmailHandler>();

@@ -54,7 +54,9 @@ var payments =
 var notifications =
     builder.AddProject<Projects.Notifications>("notifications")
         .WithReference(rabbitmq)
-        .WaitFor(rabbitmq);
+        .WithReference(registry)
+        .WaitFor(rabbitmq)
+        .WaitFor(registry);
 
 var whatsapp =
     builder.AddProject<Projects.WhatsappBot>("whatsappbot")
