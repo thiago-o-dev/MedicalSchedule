@@ -11,6 +11,7 @@ public sealed class PetsController(
     ICommandHandler<RegisterPetCommand, Guid> registerPet,
     ICommandHandler<AddPetOwnerCommand> addPetOwner,
     ICommandHandler<RemovePetOwnerCommand> removePetOwner,
+    IQueryHandler<GetAllPetsQuery, IReadOnlyList<PetResponse>> getAllPets,
     IQueryHandler<GetPetByIdQuery, PetResponse> getPetById,
     IQueryHandler<GetPetOwnerQuery, OwnerContactResponse?> getPetOwner) : ControllerBase
 {
@@ -24,6 +25,15 @@ public sealed class PetsController(
             cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { petId = id }, new { id });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] Guid? ownerId,
+        CancellationToken cancellationToken)
+    {
+        var result = await getAllPets.HandleAsync(new GetAllPetsQuery(ownerId), cancellationToken);
+        return Ok(result);
     }
 
     [HttpGet("{petId:guid}")]

@@ -9,6 +9,11 @@ public sealed class OwnerRepository(RegistryDbContext dbContext) : IOwnerReposit
     public async Task AddAsync(Owner owner, CancellationToken cancellationToken = default)
         => await dbContext.Owners.AddAsync(owner, cancellationToken);
 
+    public async Task<IReadOnlyList<Owner>> GetAllAsync(CancellationToken cancellationToken = default)
+        => await dbContext.Owners
+            .OrderBy(o => o.Name)
+            .ToListAsync(cancellationToken);
+
     public Task<Owner?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => dbContext.Owners.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 

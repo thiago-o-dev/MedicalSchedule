@@ -15,6 +15,18 @@ public sealed class PetRepository(RegistryDbContext dbContext) : IPetRepository
         return Task.CompletedTask;
     }
 
+    public async Task<IReadOnlyList<Pet>> GetAllAsync(Guid? ownerId = null, CancellationToken cancellationToken = default)
+    {
+        var query = dbContext.Pets.AsQueryable();
+
+        if (ownerId.HasValue)
+            query = query.Where(p => p.Ownerships.Any(o => o.OwnerId == ownerId.Value));
+
+        return await query
+            .OrderBy(p => p.Name)
+            .ToListAsync(cancellationToken);
+    }
+
     public Task<Pet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => dbContext.Pets
             .Include(x => x.Ownerships)
