@@ -1,5 +1,6 @@
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Persistence.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Registry.Features.Shared;
 using Registry.Infrastructure.Persistence;
 using Registry.Infrastructure.Persistence.Repositories;
@@ -39,6 +40,12 @@ builder.Services.Scan(scan => scan
         .WithScopedLifetime());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RegistryDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.MapDefaultEndpoints();
 

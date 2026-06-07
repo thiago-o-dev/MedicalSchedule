@@ -10,9 +10,6 @@ public class Owner : LifeCycleEntity
     public string Phone { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
 
-    private readonly List<Pet> _pets = [];
-    public IReadOnlyList<Pet> Pets => _pets.AsReadOnly();
-
     private Owner() { }
 
     public static Owner Create(string name, string cpf, string phone, string email)

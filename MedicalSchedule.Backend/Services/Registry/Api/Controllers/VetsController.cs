@@ -17,7 +17,7 @@ public sealed class VetsController(
         CancellationToken cancellationToken)
     {
         var id = await createVet.HandleAsync(
-            new CreateVetCommand(request.Name, request.Crm, request.Specialty),
+            new CreateVetCommand(request.Name, request.Crm, request.Specialty, request.Email),
             cancellationToken);
 
         return Created($"/api/vets/{id}", new { id });

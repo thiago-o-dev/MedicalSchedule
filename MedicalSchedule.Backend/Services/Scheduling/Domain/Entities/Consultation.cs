@@ -18,7 +18,6 @@ public class Consultation : LifeCycleEntity
     public ConsultationStatus Status { get; private set; }
 
     public DateTime ScheduledAt { get; private set; }
-    public TimeSpan EstimatedDuration { get; private set; }
 
     public string? Notes { get; private set; }
 

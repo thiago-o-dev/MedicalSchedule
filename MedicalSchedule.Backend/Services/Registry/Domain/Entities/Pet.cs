@@ -1,5 +1,4 @@
 using Registry.Domain.Enums;
-using Registry.Domain.Events;
 using Registry.Domain.Policies;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
@@ -64,8 +63,6 @@ public class Pet : LifeCycleEntity
                 Id,
                 ownerId,
                 isPrimaryOwner));
-
-        RaiseDomainEvent(new PetOwnerAddedIntegrationEvent(Id, ownerId));
     }
 
     public void RemoveOwner(Guid ownerId)
@@ -80,15 +77,6 @@ public class Pet : LifeCycleEntity
             ownership);
 
         _ownerships.Remove(ownership);
-
-        RaiseDomainEvent(new PetOwnerRemovedIntegrationEvent(Id, ownerId));
     }
 
-    // Raises a cross-BC validation event. The handler in the Scheduling BC
-    // will reject this if the pet has future scheduled consultations.
-    public void RequestDeactivation()
-        => RaiseDomainEvent(new PetDeactivationRequestedEvent(Id));
-
-    public new void Deactivate()
-        => base.Deactivate();
 }

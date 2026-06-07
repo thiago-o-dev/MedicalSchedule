@@ -19,8 +19,16 @@ public sealed class SmtpEmailService(
         message.Body = new TextPart("html") { Text = body };
 
         using var client = new SmtpClient();
-        await client.ConnectAsync(settings.Value.Host, settings.Value.Port, SecureSocketOptions.StartTls, cancellationToken);
-        await client.AuthenticateAsync(settings.Value.Username, settings.Value.Password, cancellationToken);
+
+        var socketOptions = settings.Value.EnableSsl
+            ? SecureSocketOptions.StartTls
+            : SecureSocketOptions.None;
+
+        await client.ConnectAsync(settings.Value.Host, settings.Value.Port, socketOptions, cancellationToken);
+
+        if (!string.IsNullOrEmpty(settings.Value.Username))
+            await client.AuthenticateAsync(settings.Value.Username, settings.Value.Password, cancellationToken);
+
         await client.SendAsync(message, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);
 
