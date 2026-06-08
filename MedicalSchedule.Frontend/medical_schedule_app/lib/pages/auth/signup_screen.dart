@@ -1,97 +1,95 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:medical_schedule_app/repositories/auth_repository.dart';
-
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_input.dart';
+import '../../repositories/auth_repository.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() =>
-      _SignupScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState
-    extends State<SignupScreen> {
-  bool isOwner = true;
+class _SignupScreenState extends State<SignupScreen> {
+  bool _isOwner = true;
+  bool _loading = false;
 
-  // do owner
-  final nameController = TextEditingController();
-  final documentController = TextEditingController();
-  final phoneController = TextEditingController();
-  // pro keycloak
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _documentCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _specialtyCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
 
-  bool loading = false;
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _documentCtrl.dispose();
+    _phoneCtrl.dispose();
+    _specialtyCtrl.dispose();
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
 
-  Future<void> register() async {
-    setState(() {
-      loading = true;
-    });
-
-    try {
-      final repository = AuthRepository();
-
-      await repository.register(
-        name: nameController.text,
-        document: documentController.text,
-        phone: phoneController.text,
-        email: emailController.text,
-        password: passwordController.text,
+  Future<void> _register() async {
+    if (_nameCtrl.text.isEmpty ||
+        _documentCtrl.text.isEmpty ||
+        _phoneCtrl.text.isEmpty ||
+        _emailCtrl.text.isEmpty ||
+        _passwordCtrl.text.isEmpty ||
+        (!_isOwner && _specialtyCtrl.text.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Fill in all required fields.')),
       );
-
-      if (mounted) {
-        if (isOwner){
-          context.go('/owner');
-        }else{
-          context.go('/vet');
-        }
-        
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      return;
     }
 
-    setState(() {
-      loading = false;
-    });
+    setState(() => _loading = true);
+
+    try {
+      await AuthRepository().register(
+        name: _nameCtrl.text,
+        document: _documentCtrl.text,
+        phone: _phoneCtrl.text,
+        email: _emailCtrl.text,
+        password: _passwordCtrl.text,
+        isOwner: _isOwner,
+        specialty: _isOwner ? null : _specialtyCtrl.text,
+      );
+
+      if (mounted) context.go(_isOwner ? '/owner' : '/vet');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Sign Up')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ToggleButtons(
-              isSelected: [
-                isOwner,
-                !isOwner,
-              ],
-              onPressed: (index) {
-                setState(() {
-                  isOwner = index == 0;
-                });
-              },
+              isSelected: [_isOwner, !_isOwner],
+              onPressed: (i) => setState(() => _isOwner = i == 0),
               children: const [
                 Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text('Owner'),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text('Vet'),
                 ),
               ],
@@ -99,41 +97,34 @@ class _SignupScreenState
 
             const SizedBox(height: 24),
 
+            CustomInput(label: 'Name', controller: _nameCtrl),
             CustomInput(
-              label: 'Name',
-              controller: nameController,
+              label: _isOwner ? 'CPF' : 'CRM',
+              controller: _documentCtrl,
             ),
+            CustomInput(label: 'Phone', controller: _phoneCtrl),
 
-            CustomInput(
-              label: isOwner ? 'CPF' : 'CRMV',
-              controller: documentController,
-            ),
+            if (!_isOwner)
+              CustomInput(label: 'Specialty', controller: _specialtyCtrl),
 
+            CustomInput(label: 'Email', controller: _emailCtrl),
             CustomInput(
-              label: 'Phone',
-              controller: phoneController,
-            ),
-
-            CustomInput(
-              label: 'Email',
-              controller: emailController,
+              label: 'Password',
+              controller: _passwordCtrl,
+              obscureText: true,
             ),
 
             const SizedBox(height: 24),
 
             CustomButton(
-              text: loading ? 'Loading...' : 'Register',
-              onPressed: register,
+              text: _loading ? 'Loading...' : 'Register',
+              onPressed: _loading ? () {} : _register,
             ),
-            
+
             TextButton(
-                onPressed: () {
-                  context.pop();
-                },
-                child: const Text(
-                  'Return',
-                ),
-              ),
+              onPressed: () => context.pop(),
+              child: const Text('Return'),
+            ),
           ],
         ),
       ),

@@ -10,96 +10,99 @@ class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() =>
-      _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState
-    extends ConsumerState<LoginScreen> {
-  final emailController =
-      TextEditingController();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+  bool _isOwner = true;
+  bool _loading = false;
 
-  final passwordController =
-      TextEditingController();
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
 
-  bool loading = false;
-
-  Future<void> login() async {
-    setState(() {
-      loading = true;
-    });
-
-    try {
-      final repository = AuthRepository();
-
-      await repository.login(
-        email: emailController.text,
-        password: passwordController.text,
+  Future<void> _login() async {
+    if (_emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Fill in email and password.')),
       );
-
-      if (mounted) {
-        context.go('/owner');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      return;
     }
 
-    setState(() {
-      loading = false;
-    });
+    setState(() => _loading = true);
+
+    try {
+      await AuthRepository().login(
+        email: _emailCtrl.text,
+        password: _passwordCtrl.text,
+      );
+
+      if (mounted) context.go(_isOwner ? '/owner' : '/vet');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding:
-            const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Center(
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
                 'Medical Schedule',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),
 
-              CustomInput(
-                label: 'Email',
-                controller: emailController,
+              ToggleButtons(
+                isSelected: [_isOwner, !_isOwner],
+                onPressed: (i) => setState(() => _isOwner = i == 0),
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Owner'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Vet'),
+                  ),
+                ],
               ),
 
+              const SizedBox(height: 24),
+
+              CustomInput(label: 'Email', controller: _emailCtrl),
               CustomInput(
                 label: 'Password',
-                controller:
-                    passwordController,
+                controller: _passwordCtrl,
                 obscureText: true,
               ),
 
               const SizedBox(height: 24),
 
               CustomButton(
-                text: loading ? 'Loading...' : 'Login',
-                onPressed: login,
+                text: _loading ? 'Loading...' : 'Login',
+                onPressed: _loading ? () {} : _login,
               ),
 
               TextButton(
-                onPressed: () {
-                  context.push('/signup');
-                },
-                child: const Text(
-                  'Create account',
-                ),
+                onPressed: () => context.push('/signup'),
+                child: const Text('Create account'),
               ),
             ],
           ),

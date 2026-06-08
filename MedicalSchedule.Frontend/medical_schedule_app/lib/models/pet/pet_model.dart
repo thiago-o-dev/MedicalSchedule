@@ -6,7 +6,8 @@ class PetModel {
   final PetSpecies species;
   final String breed;
   final DateTime birthDate;
-  final String ownerId;
+  final String? primaryOwnerId;
+  final bool isActive;
 
   PetModel({
     this.id,
@@ -14,27 +15,31 @@ class PetModel {
     required this.species,
     required this.breed,
     required this.birthDate,
-    required this.ownerId,
+    this.primaryOwnerId,
+    this.isActive = true,
   });
 
   Map<String, dynamic> toJson() {
+    final d = birthDate;
+    final dateStr =
+        '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     return {
       'name': name,
-      'species': species.index,
+      'species': species.toBackendValue(),
       'breed': breed,
-      'birthDate': birthDate.toIso8601String(),
-      'ownerId': ownerId,
+      'birthDate': dateStr,
+      'primaryOwnerId': primaryOwnerId,
     };
   }
 
   factory PetModel.fromJson(Map<String, dynamic> json) {
     return PetModel(
-      id: json['id'],
-      name: json['name'],
-      species: PetSpecies.values[json['species']],
-      breed: json['breed'],
-      birthDate: DateTime.parse(json['birthDate']),
-      ownerId: json['ownerId'],
+      id: json['id'] as String?,
+      name: json['name'] as String,
+      species: PetSpecies.fromBackendValue(json['species'] as int),
+      breed: json['breed'] as String,
+      birthDate: DateTime.parse(json['birthDate'] as String),
+      isActive: json['isActive'] as bool? ?? true,
     );
   }
 }

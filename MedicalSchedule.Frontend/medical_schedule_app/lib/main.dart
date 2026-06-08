@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:medical_schedule_app/medical_schedule_app.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'medical_schedule_app.dart';
 
 void main() {
-  runApp(MedicalScheduleApp());
+  runApp(
+    const ProviderScope(
+      child: MedicalScheduleApp(),
+    ),
+  );
 }
-
