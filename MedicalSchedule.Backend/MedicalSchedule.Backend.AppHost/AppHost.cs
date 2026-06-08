@@ -71,10 +71,12 @@ var whatsapp =
 
 var gateway =
     builder.AddProject<Projects.Api_Gateway>("gateway")
+        .WithReference(keycloak)
         .WithReference(registry)
         .WithReference(scheduling)
         .WithReference(payments)
         .WithReference(notifications)
-        .WithReference(whatsapp);
+        .WithReference(whatsapp)
+        .WaitFor(registry);
 
 builder.Build().Run();
