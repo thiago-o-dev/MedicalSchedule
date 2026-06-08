@@ -1,6 +1,7 @@
 import '../core/storage/token_storage.dart';
 import '../models/auth/login_request_model.dart';
 import '../models/auth/login_response_model.dart';
+import '../models/auth/register_request_model.dart';
 import '../services/auth_service.dart';
 
 class AuthRepository {
@@ -10,19 +11,14 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    final request = LoginRequestModel(
-      email: email,
-      password: password,
+    final response = await _service.login(
+      LoginRequestModel(email: email, password: password),
     );
-
-    final response = await _service.login(request);
-
     final model = LoginResponseModel.fromJson(
-      response.data,
+      response.data as Map<String, dynamic>,
     );
-
     await TokenStorage.saveToken(model.token);
-
+    await TokenStorage.saveEmail(email);
     return model;
   }
 
@@ -32,21 +28,25 @@ class AuthRepository {
     required String phone,
     required String email,
     required String password,
+    required bool isOwner,
+    String? specialty,
   }) async {
-    // TODO: RegisterRequestModel
-    final request = LoginRequestModel(
-      email: email,
-      password: password,
+    final response = await _service.register(
+      RegisterRequestModel(
+        name: name,
+        document: document,
+        phone: phone,
+        email: email,
+        password: password,
+        isOwner: isOwner,
+        specialty: specialty,
+      ),
     );
-
-    final response = await _service.login(request);
-
     final model = LoginResponseModel.fromJson(
-      response.data,
+      response.data as Map<String, dynamic>,
     );
-
     await TokenStorage.saveToken(model.token);
-
+    await TokenStorage.saveEmail(email);
     return model;
   }
 
@@ -55,8 +55,6 @@ class AuthRepository {
   }
 
   Future<bool> isAuthenticated() async {
-    final token = await TokenStorage.getToken();
-
-    return token != null;
+    return await TokenStorage.getToken() != null;
   }
 }

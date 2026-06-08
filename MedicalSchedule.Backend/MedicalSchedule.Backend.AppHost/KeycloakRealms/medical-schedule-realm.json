@@ -1,0 +1,28 @@
+{
+  "realm": "medical-schedule",
+  "enabled": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "registrationAllowed": false,
+  "clients": [
+    {
+      "clientId": "medical-schedule-app",
+      "name": "Medical Schedule App",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "owner", "description": "Tutor de pet" },
+      { "name": "vet", "description": "Veterinario" }
+    ],
+    "client": {}
+  }
+}

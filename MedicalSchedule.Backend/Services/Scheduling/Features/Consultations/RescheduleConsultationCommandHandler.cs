@@ -14,7 +14,7 @@ public sealed class RescheduleConsultationCommandHandler(ISchedulingUnitOfWork u
             .FirstOrDefaultAsync(c => c.Id == command.ConsultationId, cancellationToken)
             ?? throw new NotFoundException($"Consultation '{command.ConsultationId}' not found.");
 
-        consultation.Reschedule(command.NewScheduledAt);
+        consultation.Reschedule(DateTime.SpecifyKind(command.NewScheduledAt, DateTimeKind.Utc));
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

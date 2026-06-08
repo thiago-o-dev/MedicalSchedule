@@ -27,8 +27,9 @@ var rabbitmq = builder.AddRabbitMQ("rabbitmq")
 
 var keycloak = builder.AddKeycloak("keycloak", 8081)
     .WithReference(keycloakDb)
-    .WithEnvironment("KEYCLOAK_ADMIN", "pedropedro")
-    .WithEnvironment("KEYCLOAK_ADMIN_PASSWORD", keycloakPassword)
+    .WithEnvironment("KC_BOOTSTRAP_ADMIN_USERNAME", "admin")
+    .WithEnvironment("KC_BOOTSTRAP_ADMIN_PASSWORD", keycloakPassword)
+    .WithRealmImport("./KeycloakRealms")
     .WaitFor(postgres);
 
 // Services
@@ -75,6 +76,8 @@ var gateway =
         .WithReference(scheduling)
         .WithReference(payments)
         .WithReference(notifications)
-        .WithReference(whatsapp);
+        .WithReference(whatsapp)
+        .WithReference(keycloak)
+        .WaitFor(keycloak);
 
 builder.Build().Run();
