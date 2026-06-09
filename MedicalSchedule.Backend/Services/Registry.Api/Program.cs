@@ -21,7 +21,7 @@ var rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbit
 builder.Services.AddInfrastructure(connectionString, rabbitMqConnectionString);
 
 builder.Services.Scan(scan => scan
-    .FromAssemblyOf<Program>()
+    .FromAssemblyOf<Registry.Features.Owners.GetAllOwnersQueryHandler>()
     .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
         .AsImplementedInterfaces()
         .WithScopedLifetime()
@@ -48,7 +48,6 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 

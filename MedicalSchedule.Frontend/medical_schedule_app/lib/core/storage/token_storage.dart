@@ -11,6 +11,14 @@ class TokenStorage {
     return await _storage.read(key: 'jwt_token');
   }
 
+  static Future<void> saveEmail(String email) async {
+    await _storage.write(key: 'user_email', value: email);
+  }
+
+  static Future<String?> getEmail() async {
+    return await _storage.read(key: 'user_email');
+  }
+
   static Future<void> clear() async {
     await _storage.deleteAll();
   }

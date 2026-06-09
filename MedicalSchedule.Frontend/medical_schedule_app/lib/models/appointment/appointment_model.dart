@@ -4,24 +4,27 @@ class AppointmentModel {
   final String id;
   final String petId;
   final String vetId;
-  final DateTime date;
+  final DateTime scheduledAt;
   final ConsultationStatus status;
+  final String? notes;
 
   AppointmentModel({
     required this.id,
     required this.petId,
     required this.vetId,
-    required this.date,
+    required this.scheduledAt,
     required this.status,
+    this.notes,
   });
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) {
     return AppointmentModel(
-      id: json['id'],
-      petId: json['petId'],
-      vetId: json['vetId'],
-      date: DateTime.parse(json['date']),
-      status: ConsultationStatus.values[json['status']],
+      id: json['id'] as String,
+      petId: json['petId'] as String,
+      vetId: json['vetId'] as String,
+      scheduledAt: DateTime.parse(json['scheduledAt'] as String),
+      status: ConsultationStatus.fromBackendValue(json['status'] as int),
+      notes: json['notes'] as String?,
     );
   }
 }

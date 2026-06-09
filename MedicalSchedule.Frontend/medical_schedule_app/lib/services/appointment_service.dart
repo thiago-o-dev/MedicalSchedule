@@ -8,14 +8,16 @@ class AppointmentService {
   Future<Response> scheduleAppointment({
     required String petId,
     required String vetId,
-    required DateTime date,
+    required DateTime scheduledAt,
+    String? notes,
   }) async {
     return await _dio.post(
-      '/api/consultations/appointments',
+      '/api/consultations',
       data: {
         'petId': petId,
         'vetId': vetId,
-        'date': date.toIso8601String(),
+        'scheduledAt': scheduledAt.toIso8601String(),
+        'notes': notes,
       },
     );
   }
@@ -23,13 +25,33 @@ class AppointmentService {
   Future<Response> getAppointments({
     String? petId,
     String? vetId,
+    int? status,
   }) async {
     return await _dio.get(
-      '/api/consultations/appointments',
+      '/api/consultations',
       queryParameters: {
-        'petId': petId,
-        'vetId': vetId,
+        if (petId != null) 'petId': petId,
+        if (vetId != null) 'vetId': vetId,
+        if (status != null) 'status': status,
       },
+    );
+  }
+
+  Future<Response> getAppointmentById(String id) async {
+    return await _dio.get('/api/consultations/$id');
+  }
+
+  Future<Response> cancelAppointment(String id) async {
+    return await _dio.delete('/api/consultations/$id');
+  }
+
+  Future<Response> rescheduleAppointment(
+    String id,
+    DateTime newScheduledAt,
+  ) async {
+    return await _dio.patch(
+      '/api/consultations/$id/reschedule',
+      data: {'newScheduledAt': newScheduledAt.toIso8601String()},
     );
   }
 }

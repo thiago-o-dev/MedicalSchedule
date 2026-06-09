@@ -4,6 +4,7 @@ class OwnerModel {
   final String cpf;
   final String phone;
   final String email;
+  final bool isActive;
 
   OwnerModel({
     this.id,
@@ -11,6 +12,7 @@ class OwnerModel {
     required this.cpf,
     required this.phone,
     required this.email,
+    this.isActive = true,
   });
 
   Map<String, dynamic> toJson() {
@@ -24,11 +26,12 @@ class OwnerModel {
 
   factory OwnerModel.fromJson(Map<String, dynamic> json) {
     return OwnerModel(
-      id: json['id'],
-      name: json['name'],
-      cpf: json['cpf'],
-      phone: json['phone'],
-      email: json['email'],
+      id: json['id'] as String?,
+      name: json['name'] as String,
+      cpf: json['cpf'] as String,
+      phone: json['phone'] as String,
+      email: json['email'] as String,
+      isActive: json['isActive'] as bool? ?? true,
     );
   }
 }
