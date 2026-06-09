@@ -14,6 +14,7 @@ public sealed class ConsultationsController(
     ICommandHandler<ScheduleConsultationCommand, Guid> scheduleConsultation,
     ICommandHandler<CancelConsultationCommand> cancelConsultation,
     ICommandHandler<RescheduleConsultationCommand> rescheduleConsultation,
+    ICommandHandler<CompleteConsultationByIdCommand> completeConsultationByIdCommand,
     IQueryHandler<GetAllConsultationsQuery, IReadOnlyList<ConsultationResponse>> getAllConsultations,
     IQueryHandler<GetConsultationByIdQuery, ConsultationResponse> getConsultationById) : ControllerBase
 {
@@ -76,5 +77,14 @@ public sealed class ConsultationsController(
             cancellationToken);
 
         return Ok(result);
+    }
+
+    [HttpPatch("{consultationId:guid}")]
+    public async Task<IActionResult> CompleteById(
+        Guid consultationId,
+        CancellationToken cancellationToken)
+    {
+        await completeConsultationByIdCommand.HandleAsync(new CompleteConsultationByIdCommand(consultationId), cancellationToken);
+        return NoContent();
     }
 }

@@ -16,7 +16,7 @@ public class Consultation : LifeCycleEntity
     public DateTime ScheduledAt { get; private set; }
 
     public string? Notes { get; private set; }
-
+    
     public static Consultation Schedule(Guid petId, Guid vetId, Guid ownerId, DateTime scheduledAt, string? notes)
     {
         if (petId == Guid.Empty)
@@ -68,5 +68,14 @@ public class Consultation : LifeCycleEntity
         Touch();
 
         RaiseDomainEvent(new ConsultationRescheduledEvent(Id, PetId, VetId, previous, newScheduledAt));
+    }
+
+    public void Complete()
+    {
+        if (Status != ConsultationStatus.Scheduled)
+            throw new DomainValidationException("Only scheduled consultations can be completed.");
+
+        Status = ConsultationStatus.Completed;
+        Touch();
     }
 }
