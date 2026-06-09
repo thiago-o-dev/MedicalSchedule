@@ -6,9 +6,9 @@ using SharedKernel.Exceptions;
 namespace Scheduling.Features.Consultations;
 
 public sealed class CompleteConsultationByIdCommandHandler(ISchedulingUnitOfWork unitOfWork)
-    : ICommandHandler<CancelConsultationCommand>
+    : ICommandHandler<CompleteConsultationByIdCommand>
 {
-    public async Task HandleAsync(CancelConsultationCommand command, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(CompleteConsultationByIdCommand command, CancellationToken cancellationToken = default)
     {
         var consultation = await unitOfWork.Consultations
             .FirstOrDefaultAsync(c => c.Id == command.ConsultationId, cancellationToken)
