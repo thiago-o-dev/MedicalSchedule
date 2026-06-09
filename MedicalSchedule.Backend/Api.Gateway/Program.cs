@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
+using Yarp.ReverseProxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
     .AddServiceDiscoveryDestinationResolver();
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddOpenApi();
 
 var keycloakBase =
@@ -30,25 +33,10 @@ var keycloakBase =
     ?? builder.Configuration["Keycloak:BaseUrl"]!;
 
 builder.Configuration["Keycloak:BaseUrl"] = keycloakBase;
-
-builder.Services.AddHttpClient("keycloak")
-    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-    {
-        ServerCertificateCustomValidationCallback =
-            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-    });
-
 var realm = builder.Configuration["Keycloak:Realm"]!;
 var clientId = builder.Configuration["Keycloak:ClientId"]!;
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = $"{keycloakBase}/realms/{realm}";
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters.ValidateAudience = false;
-    });
+builder.AddDefaultAuthentication(keycloakBase, realm);
 
 builder.Services.AddAuthorization();
 
@@ -56,14 +44,27 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "MedicalSchedule Gateway";
+
+        options.AddDocument("v1", "Gateway API");
+
+        options.AddDocument(
+            "Registry API",
+            routePattern: "/registry/openapi/v1.json");
+    });
+}
+
 app.UseCors();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapReverseProxy();
 app.MapControllers();
-
-if (app.Environment.IsDevelopment())
-    app.MapOpenApi();
 
 app.Run();

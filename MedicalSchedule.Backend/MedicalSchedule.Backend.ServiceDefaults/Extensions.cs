@@ -179,12 +179,26 @@ public static class Extensions
         return app;
     }
     public static TBuilder AddDefaultAuthentication<TBuilder>(
-        this TBuilder builder)
+        this TBuilder builder,
+        string keycloakBase,
+        string realm)
         where TBuilder : IHostApplicationBuilder
     {
+        builder.Services.AddHttpClient("keycloak")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            });
+        
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
+            .AddJwtBearer(options =>
+            {
+                options.Authority = $"{keycloakBase}/realms/{realm}";
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters.ValidateAudience = false;
+    });
 
         builder.Services.AddAuthorization();
 
