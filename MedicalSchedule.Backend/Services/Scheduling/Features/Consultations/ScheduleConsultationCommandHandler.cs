@@ -24,7 +24,7 @@ public sealed class ScheduleConsultationCommandHandler(ISchedulingUnitOfWork uni
         if (conflictExists)
             throw new ConflictException("This vet already has a consultation scheduled at the specified time.");
 
-        var consultation = Consultation.Schedule(command.PetId, command.VetId, scheduledAt, command.Notes);
+        var consultation = Consultation.Schedule(command.PetId, command.VetId, command.OwnerId, scheduledAt, command.Notes);
 
         unitOfWork.Consultations.Add(consultation);
         await unitOfWork.SaveChangesAsync(cancellationToken);

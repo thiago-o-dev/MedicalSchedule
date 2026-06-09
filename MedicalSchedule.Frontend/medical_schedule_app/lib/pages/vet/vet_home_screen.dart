@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../state/vet_provider.dart';
+import '../../widgets/app_drawer.dart';
 import 'related_pets_screen.dart';
 import 'vet_appointments_screen.dart';
 
-class VetHomeScreen
-    extends StatefulWidget {
-  const VetHomeScreen({super.key});
+class VetHomeScreen extends ConsumerStatefulWidget {
+  VetHomeScreen({super.key});
 
   @override
-  State<VetHomeScreen> createState() =>
-      _VetHomeScreenState();
+  ConsumerState<VetHomeScreen> createState() => _VetHomeScreenState();
 }
 
-class _VetHomeScreenState
-    extends State<VetHomeScreen> {
+class _VetHomeScreenState extends ConsumerState<VetHomeScreen> {
   int index = 0;
 
-  final pages = [
-    const VetAppointmentsScreen(),
-    const RelatedPetsScreen(),
-  ];
+  final _titles = ['My Appointments', 'Pets'];
+  final _pages = [VetAppointmentsScreen(), RelatedPetsScreen()];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[index],
+    final vetAsync = ref.watch(currentVetProvider);
+    final vet = vetAsync.valueOrNull;
 
-      bottomNavigationBar:
-          BottomNavigationBar(
+    return Scaffold(
+      appBar: AppBar(title: Text(_titles[index])),
+      drawer: AppDrawer(
+        role: 'vet',
+        userName: vet?.name,
+        userEmail: vet?.email,
+        userId: vet?.id,
+      ),
+      body: _pages[index],
+      bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
-        onTap: (value) {
-          setState(() {
-            index = value;
-          });
-        },
-        items: const [
+        onTap: (value) => setState(() => index = value),
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Appointments',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pets),
-            label: 'Pets',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'Pets'),
         ],
       ),
     );

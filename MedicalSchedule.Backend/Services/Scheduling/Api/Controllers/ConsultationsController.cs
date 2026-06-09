@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scheduling.Api.Requests;
 using Scheduling.Domain.Enums;
@@ -8,6 +9,7 @@ namespace Scheduling.Api.Controllers;
 
 [ApiController]
 [Route("api/consultations")]
+[Authorize]
 public sealed class ConsultationsController(
     ICommandHandler<ScheduleConsultationCommand, Guid> scheduleConsultation,
     ICommandHandler<CancelConsultationCommand> cancelConsultation,
@@ -21,7 +23,7 @@ public sealed class ConsultationsController(
         CancellationToken cancellationToken)
     {
         var id = await scheduleConsultation.HandleAsync(
-            new ScheduleConsultationCommand(request.PetId, request.VetId, request.ScheduledAt, request.Notes),
+            new ScheduleConsultationCommand(request.PetId, request.VetId, request.OwnerId, request.ScheduledAt, request.Notes),
             cancellationToken);
 
         return Created($"/api/consultations/{id}", new { id });
@@ -53,11 +55,12 @@ public sealed class ConsultationsController(
     public async Task<IActionResult> GetAll(
         [FromQuery] Guid? petId,
         [FromQuery] Guid? vetId,
+        [FromQuery] Guid? ownerId,
         [FromQuery] ConsultationStatus? status,
         CancellationToken cancellationToken)
     {
         var result = await getAllConsultations.HandleAsync(
-            new GetAllConsultationsQuery(petId, vetId, status),
+            new GetAllConsultationsQuery(petId, vetId, ownerId, status),
             cancellationToken);
 
         return Ok(result);

@@ -11,7 +11,7 @@ class VetRepository {
 
   Future<List<VetModel>> getVets() async {
     final response = await _service.getVets();
-    final List data = response.data as List;
+    final data = response.data as List;
     return data
         .map((e) => VetModel.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -20,5 +20,18 @@ class VetRepository {
   Future<VetModel> getVetById(String id) async {
     final response = await _service.getVetById(id);
     return VetModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<void> deactivateVet(String id) async {
+    await _service.deactivateVet(id);
+  }
+
+  Future<VetModel?> getCurrentVet() async {
+    try {
+      final response = await _service.getMe();
+      return VetModel.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
   }
 }

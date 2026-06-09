@@ -17,6 +17,9 @@ public sealed class OwnerRepository(RegistryDbContext dbContext) : IOwnerReposit
     public Task<Owner?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => dbContext.Owners.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
+    public Task<Owner?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+        => dbContext.Owners.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
+
     public Task<Owner?> GetOwnerByPetIdAsync(Guid petId, CancellationToken cancellationToken = default)
         => dbContext.Owners
             .Join(

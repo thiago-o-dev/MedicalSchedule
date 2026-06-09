@@ -8,6 +8,7 @@ class AppointmentService {
   Future<Response> scheduleAppointment({
     required String petId,
     required String vetId,
+    required String ownerId,
     required DateTime scheduledAt,
     String? notes,
   }) async {
@@ -16,6 +17,7 @@ class AppointmentService {
       data: {
         'petId': petId,
         'vetId': vetId,
+        'ownerId': ownerId,
         'scheduledAt': scheduledAt.toIso8601String(),
         'notes': notes,
       },
@@ -25,6 +27,7 @@ class AppointmentService {
   Future<Response> getAppointments({
     String? petId,
     String? vetId,
+    String? ownerId,
     int? status,
   }) async {
     return await _dio.get(
@@ -32,6 +35,7 @@ class AppointmentService {
       queryParameters: {
         if (petId != null) 'petId': petId,
         if (vetId != null) 'vetId': vetId,
+        if (ownerId != null) 'ownerId': ownerId,
         if (status != null) 'status': status,
       },
     );

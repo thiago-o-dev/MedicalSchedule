@@ -13,7 +13,18 @@ public sealed class GetAllPetsQueryHandler(IPetRepository petRepository)
         var pets = await petRepository.GetAllAsync(query.OwnerId, cancellationToken);
 
         return pets
-            .Select(p => new PetResponse(p.Id, p.Name, p.Species, p.Breed, p.BirthDate, p.IsActive))
+            .Select(p => new PetResponse(
+                p.Id,
+                p.Name,
+                p.Species,
+                p.Breed,
+                p.BirthDate,
+                p.IsActive,
+                p.DeletionStatus,
+                p.DeletionRejectionReason,
+                p.Ownerships
+                    .Select(o => new PetOwnershipResponse(o.OwnerId, o.IsPrimaryOwner))
+                    .ToList()))
             .ToList();
     }
 }

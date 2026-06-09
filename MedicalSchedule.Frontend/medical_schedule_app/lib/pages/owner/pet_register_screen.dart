@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/routes.dart';
-import '../../core/storage/token_storage.dart';
 import '../../models/pet/pet_model.dart';
 import '../../models/pet/pet_species_enum.dart';
 import '../../state/owner_provider.dart';
 import '../../state/pet_provider.dart';
+import '../../widgets/api_error_snackbar.dart';
+import '../../widgets/confirm_dialog.dart';
+import '../../widgets/pet_card.dart';
 
 class PetRegisterScreen extends ConsumerWidget {
-  const PetRegisterScreen({super.key});
+  PetRegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,19 +21,6 @@ class PetRegisterScreen extends ConsumerWidget {
     final petsAsync = ref.watch(petsProvider(ownerId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Pets'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: () async {
-              await TokenStorage.clear();
-              if (context.mounted) context.go(Routes.login);
-            },
-          ),
-        ],
-      ),
       floatingActionButton: currentOwnerAsync.when(
         loading: () => null,
         error: (_, __) => null,
@@ -39,41 +28,66 @@ class PetRegisterScreen extends ConsumerWidget {
             ? null
             : FloatingActionButton(
                 onPressed: () => _showAddPetDialog(context, ref, owner.id!),
-                child: const Icon(Icons.add),
+                child: Icon(Icons.add),
               ),
       ),
       body: petsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text(e.toString())),
         data: (pets) {
           if (pets.isEmpty) {
-            return const Center(
+            return Center(
               child: Text('No pets registered. Tap + to add one!'),
             );
           }
-          return ListView.builder(
-            itemCount: pets.length,
-            itemBuilder: (_, i) {
-              final pet = pets[i];
-              return Card(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
-                child: ListTile(
-                  leading: const Icon(Icons.pets),
-                  title: Text(pet.name),
-                  subtitle: Text('${pet.species.displayName} • ${pet.breed}'),
-                  trailing: pet.isActive
-                      ? null
-                      : const Chip(label: Text('Inactive')),
-                ),
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: () async => ref.invalidate(petsProvider(ownerId)),
+            child: ListView.builder(
+              itemCount: pets.length,
+              itemBuilder: (_, i) {
+                final pet = pets[i];
+                return PetCard(
+                  pet: pet,
+                  onTap: () => context.push('${Routes.petDetail}/${pet.id}'),
+                  onDelete: () => _requestDeletion(context, ref, pet, ownerId),
+                );
+              },
+            ),
           );
         },
       ),
     );
+  }
+
+  Future<void> _requestDeletion(
+    BuildContext context,
+    WidgetRef ref,
+    PetModel pet,
+    String? ownerId,
+  ) async {
+    final ok = await showConfirmDialog(
+      context,
+      title: 'Request deletion of "${pet.name}"?',
+      message:
+          'The Scheduling service will check for future appointments. '
+          'If any exist, deletion will be rejected.',
+      destructive: true,
+      confirmLabel: 'Request',
+    );
+    if (!ok || !context.mounted) return;
+
+    try {
+      await ref.read(petRepositoryProvider).requestPetDeletion(pet.id!);
+      ref.invalidate(petsProvider(ownerId));
+      if (context.mounted) {
+        showSuccessSnackBar(
+          context,
+          'Deletion requested. Awaiting review...',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) showApiErrorSnackBar(context, e);
+    }
   }
 
   void _showAddPetDialog(BuildContext context, WidgetRef ref, String ownerId) {
@@ -91,7 +105,7 @@ class _AddPetDialog extends ConsumerStatefulWidget {
   final String ownerId;
   final VoidCallback onSaved;
 
-  const _AddPetDialog({required this.ownerId, required this.onSaved});
+  _AddPetDialog({required this.ownerId, required this.onSaved});
 
   @override
   ConsumerState<_AddPetDialog> createState() => _AddPetDialogState();
@@ -115,9 +129,7 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
     if (nameCtrl.text.isEmpty ||
         breedCtrl.text.isEmpty ||
         selectedBirthDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields.')),
-      );
+      showApiErrorSnackBar(context, 'Please fill in all fields.');
       return;
     }
 
@@ -133,14 +145,13 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
             ),
           );
       widget.onSaved();
-      if (mounted) Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+        showSuccessSnackBar(context, 'Pet registered!');
+      }
     } catch (e) {
       setState(() => loading = false);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
+      if (mounted) showApiErrorSnackBar(context, e);
     }
   }
 
@@ -152,23 +163,23 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
         : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
     return AlertDialog(
-      title: const Text('Add Pet'),
+      title: Text('Add Pet'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameCtrl,
-              decoration: const InputDecoration(labelText: 'Name *'),
+              decoration: InputDecoration(labelText: 'Name *'),
             ),
             TextField(
               controller: breedCtrl,
-              decoration: const InputDecoration(labelText: 'Breed *'),
+              decoration: InputDecoration(labelText: 'Breed *'),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             DropdownButtonFormField<PetSpecies>(
               value: selectedSpecies,
-              decoration: const InputDecoration(labelText: 'Species'),
+              decoration: InputDecoration(labelText: 'Species'),
               items: PetSpecies.values
                   .map(
                     (s) => DropdownMenuItem(
@@ -179,11 +190,11 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
                   .toList(),
               onChanged: (v) => setState(() => selectedSpecies = v!),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(birthLabel),
-              trailing: const Icon(Icons.calendar_today),
+              trailing: Icon(Icons.calendar_today),
               onTap: () async {
                 final picked = await showDatePicker(
                   context: context,
@@ -202,17 +213,17 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
       actions: [
         TextButton(
           onPressed: loading ? null : () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('Cancel'),
         ),
         TextButton(
           onPressed: loading ? null : _save,
           child: loading
-              ? const SizedBox(
+              ? SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Save'),
+              : Text('Save'),
         ),
       ],
     );

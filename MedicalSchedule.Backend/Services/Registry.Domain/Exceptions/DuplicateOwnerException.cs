@@ -1,3 +1,5 @@
-﻿namespace Registry.Domain.Exceptions;
+using SharedKernel.Exceptions;
 
-public class DuplicateOwnerException(string message) : Exception(message);
+namespace Registry.Domain.Exceptions;
+
+public class DuplicateOwnerException(string message) : ConflictException(message);

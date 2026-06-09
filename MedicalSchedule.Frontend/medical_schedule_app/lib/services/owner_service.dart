@@ -14,6 +14,10 @@ class OwnerService {
     return await _dio.get('/api/owners');
   }
 
+  Future<Response> getMe() async {
+    return await _dio.get('/api/owners/me');
+  }
+
   Future<Response> getOwnerById(String id) async {
     return await _dio.get('/api/owners/$id');
   }
