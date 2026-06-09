@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Scalar.AspNetCore;
+using Yarp.ReverseProxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,17 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()));
 
 builder.Services.AddControllers();
+
+builder.Services
+    .AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    .AddServiceDiscoveryDestinationResolver();
+
+builder.AddDefaultAuthentication();
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddOpenApi();
 
 var keycloakBase =
     builder.Configuration["services:keycloak:https:0"]?.TrimEnd('/')
@@ -54,6 +66,8 @@ app.MapDefaultEndpoints();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapReverseProxy();
 
 app.MapControllers();
 app.MapReverseProxy();

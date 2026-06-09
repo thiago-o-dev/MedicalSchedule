@@ -178,4 +178,16 @@ public static class Extensions
 
         return app;
     }
+    public static TBuilder AddDefaultAuthentication<TBuilder>(
+        this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer();
+
+        builder.Services.AddAuthorization();
+
+        return builder;
+    }
 }
