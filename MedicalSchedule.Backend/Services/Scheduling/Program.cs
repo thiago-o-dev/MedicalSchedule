@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddKeycloakAuthentication();
+builder.AddProblemDetailsHandling();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

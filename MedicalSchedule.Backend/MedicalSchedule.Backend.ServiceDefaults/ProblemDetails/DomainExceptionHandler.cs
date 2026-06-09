@@ -29,12 +29,12 @@ public sealed class DomainExceptionHandler(
 
             DomainValidationException => (
                 StatusCodes.Status400BadRequest,
-                "Invalid request",
+                $"Invalid request: {exception.Message}",
                 "https://tools.ietf.org/html/rfc7231#section-6.5.1"),
 
             BusinessLogicException => (
                 StatusCodes.Status422UnprocessableEntity,
-                "Business rule violation",
+                $"Business rule violation: {exception.Message}",
                 "https://tools.ietf.org/html/rfc4918#section-11.2"),
 
             _ => (0, string.Empty, string.Empty)

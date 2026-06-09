@@ -31,4 +31,7 @@ public sealed class OwnerRepository(RegistryDbContext dbContext) : IOwnerReposit
             .OrderByDescending(x => x.ownership.IsPrimaryOwner)
             .Select(x => x.owner)
             .FirstOrDefaultAsync(cancellationToken);
+
+    public Task<Owner?> FindDuplicateAsync(string cpf, string email, CancellationToken cancellationToken = default)
+        => dbContext.Owners.FirstOrDefaultAsync(owner => owner.Cpf == cpf || owner.Email == email);
 }

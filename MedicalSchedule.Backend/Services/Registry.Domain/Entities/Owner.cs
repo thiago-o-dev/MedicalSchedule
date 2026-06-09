@@ -1,3 +1,4 @@
+using Registry.Domain.Policies;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
 
@@ -23,6 +24,7 @@ public class Owner : LifeCycleEntity
         if (string.IsNullOrWhiteSpace(email))
             throw new DomainValidationException("Email is required.");
 
+
         var owner = new Owner
         {
             Id = Guid.NewGuid(),
@@ -33,6 +35,8 @@ public class Owner : LifeCycleEntity
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+
+        OwnerPolicy.EnsureCanCreateOwner(owner);
 
         // owner.RaiseDomainEvent(new OwnerCreatedDomainEvent(owner.Id));
 
