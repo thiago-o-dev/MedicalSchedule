@@ -1,70 +1,32 @@
 # MedicalSchedule
-
 Sistema de agendamento de consultas veterinárias. Trabalho acadêmico com foco em DDD (Domain-Driven Design) e microsserviços.
 
-## Arquitetura
+## Informação de Arquitetura
+Essa aplicação funciona com microsserviços utilizando Aspire .NET adjunto de gateway feito com YARP, mensagerias com EasyNetQ (rabbitMq com contratos), Redis para cache, e utilizando o Postgres como db.
 
-Clean Architecture com dois Bounded Contexts:
+Implementamos o Keycloak para autentificação e mailhog para visualização de notificações.
 
-- **Registration** — Cadastro de tutores (`Owner`) e pets (`Pet`)
-- **Consultations** — Cadastro de veterinários (`Vet`) e agendamento de consultas (`Appointment`)
+Nossos services são:
+Registry, Scheduling, Notifications, Payments, WhatsappBot.
 
-```bash
-MedicalSchedule.Domain          → Entidades, eventos de domínio, abstrações
-MedicalSchedule.Application     → Use cases, ViewModels, validators, event handlers
-MedicalSchedule.Infrastructure  → EF Core, DbContext, DomainEventDispatcher
-MedicalSchedule.WebApi          → Controllers, JWT, configuração do host
-MedicalSchedule.Frontend        → (em desenvolvimento)
-```
+## Como rodar:
+Iniciar o docker desktop e rodar a aplicação backend pelo AppHost.
+O front end será automaticamente iniciado devido uma rotina docker.
 
-## Stack
-- .NET 10 / C# 13
-- Aspire (orchestrador)
-- EF Core 10 + SQLite
-- FluentValidation 11
-- Scrutor 5 (auto-registro de handlers)
-- Scalar (documentação da API)
+# English
 
-### Microsserviços
-- Keycloak (auth)
-- Postgres
+# MedicalSchedule
+Appointment system for veterinary consulations. Academic project with focus in DDD (Domain-Driven Design) and microservices.
 
-## Como rodar
+## Architecture Information
+This application works with microservices using Aspire .NET alongside a gateway built with YARP, messaging with EasyNetQ (RabbitMQ with contracts), Redis for caching, and using Postgres as the database.
 
-```bash
-# Restaurar dependências
-dotnet restore
+We implemented Keycloak for authentication and Mailhog for displaying notifications.
 
-# Aplicar migrations (banco já criado se clonar com o .db)
-# Vou ver se posso deixar isso pelo orchestrador tbm
-dotnet ef database update --project MedicalSchedule.Infrastructure --startup-project MedicalSchedule.WebApi
+Our services are:
 
-# Rodar a API
-dotnet run --project MedicalSchedule.AppHost
-```
+Registry, Scheduling, Notifications, Payments, WhatsApp Bot.
 
-A API sobe em `https://localhost:5001`. Documentação interativa em `/scalar/v1`.
-
-## Autenticação
-
-Endpoint temporário para testes:
-
-```
-POST /api/auth/token
-{ "username": "admin", "password": "admin" }
-```
-
-Retorna um JWT Bearer token. Todos os demais endpoints exigem o header `Authorization: Bearer <token>`.
-
-## Endpoints
-
-| Bounded Context | Recurso | Prefixo |
-|---|---|---|
-| Registration | Tutores | `api/registration/owners` |
-| Registration | Pets | `api/registration/pets` |
-| Consultations | Veterinários | `api/consultations/vets` |
-| Consultations | Consultas | `api/consultations/appointments` |
-
-## Regra cross-BC
-
-Um pet com consultas futuras agendadas **não pode ser desativado**. Implementado via Domain Event (`PetDeactivationRequestedEvent`) disparado antes do `SaveChanges`, validado pelo handler do BC de Consultations.
+## How to run:
+Start docker desktop and run the aplication backend by the AppHost.
+The front-end will be automatically started due to a docker routine.
