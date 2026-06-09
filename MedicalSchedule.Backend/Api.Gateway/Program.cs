@@ -53,11 +53,22 @@ if (app.Environment.IsDevelopment())
     {
         options.Title = "MedicalSchedule Gateway";
 
+        options
+            .AddPreferredSecuritySchemes("Bearer")
+            .AddHttpAuthentication("Bearer", auth =>
+            {
+                auth.Token = "";
+            });
+
         options.AddDocument("v1", "Gateway API");
 
         options.AddDocument(
             "Registry API",
             routePattern: "/registry/openapi/v1.json");
+
+        options.AddDocument(
+            "Scheduling API",
+            routePattern: "/scheduling/openapi/v1.json");
     });
 }
 

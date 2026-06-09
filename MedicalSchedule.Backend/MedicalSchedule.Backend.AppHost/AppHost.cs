@@ -83,6 +83,7 @@ var gateway =
         .WithReference(notifications)
         .WithReference(whatsapp)
         .WaitFor(keycloak)
-        .WaitFor(registry);
+        .WaitFor(registry)
+        .WaitFor(scheduling);
 
 builder.Build().Run();
