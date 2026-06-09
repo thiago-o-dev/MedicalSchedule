@@ -1,3 +1,4 @@
+using Caching.Redis;
 using Microsoft.EntityFrameworkCore;
 using Scheduling.Domain.Entities;
 using Scheduling.Domain.Enums;
@@ -7,12 +8,18 @@ using SharedKernel.Exceptions;
 
 namespace Scheduling.Features.Consultations;
 
-public sealed class ScheduleConsultationCommandHandler(ISchedulingUnitOfWork unitOfWork)
+public sealed class ScheduleConsultationCommandHandler(
+    ISchedulingUnitOfWork unitOfWork,
+    ISlotLockService slotLockService)
     : ICommandHandler<ScheduleConsultationCommand, Guid>
 {
     public async Task<Guid> HandleAsync(ScheduleConsultationCommand command, CancellationToken cancellationToken = default)
     {
         var scheduledAt = DateTime.SpecifyKind(command.ScheduledAt, DateTimeKind.Utc);
+
+        var locked = await slotLockService.TryAcquireSlotLockAsync(command.VetId, scheduledAt, cancellationToken);
+        if (!locked)
+            throw new ConflictException("This slot is temporarily reserved. Please try again in a moment.");
 
         var conflictExists = await unitOfWork.Consultations
             .AnyAsync(c =>

@@ -43,7 +43,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -58,13 +58,13 @@ if (app.Environment.IsDevelopment())
             routePattern: "/registry/openapi/v1.json");
     });
 }
+
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapReverseProxy();
-
 app.MapControllers();
 
 app.Run();
