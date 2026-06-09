@@ -5,7 +5,7 @@ import 'medical_schedule_app.dart';
 
 void main() {
   runApp(
-    const ProviderScope(
+    ProviderScope(
       child: MedicalScheduleApp(),
     ),
   );

@@ -7,7 +7,10 @@ namespace Api.Gateway.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfiguration configuration) : ControllerBase
+public sealed class AuthController(
+    IHttpClientFactory httpClientFactory,
+    IConfiguration configuration,
+    ILogger<AuthController> logger) : ControllerBase
 {
     private string KeycloakBase => configuration["Keycloak:BaseUrl"]!;
     private string Realm => configuration["Keycloak:Realm"]!;
@@ -21,11 +24,13 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
     {
         using var client = httpClientFactory.CreateClient("keycloak");
 
+        var username = request.Email.Trim().ToLowerInvariant();
+
         var form = new FormUrlEncodedContent(
         [
             new KeyValuePair<string, string>("grant_type", "password"),
             new KeyValuePair<string, string>("client_id", ClientId),
-            new KeyValuePair<string, string>("username", request.Email),
+            new KeyValuePair<string, string>("username", username),
             new KeyValuePair<string, string>("password", request.Password),
         ]);
 
@@ -35,7 +40,17 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
         var body = await response.Content.ReadAsStringAsync(ct);
 
         if (!response.IsSuccessStatusCode)
-            return StatusCode((int)response.StatusCode, body);
+        {
+            logger.LogWarning(
+                "Keycloak token request failed. Username={Username} Status={Status} Body={Body}",
+                username, (int)response.StatusCode, body);
+            return new ContentResult
+            {
+                StatusCode = (int)response.StatusCode,
+                Content = body,
+                ContentType = "application/json"
+            };
+        }
 
         using var json = JsonDocument.Parse(body);
         var token = json.RootElement.GetProperty("access_token").GetString();
@@ -55,14 +70,15 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
+        var email = request.Email.Trim().ToLowerInvariant();
         var parts = request.Name.Trim().Split(' ', 2);
 
         var createResp = await client.PostAsJsonAsync(
             $"{KeycloakBase}/admin/realms/{Realm}/users",
             new
             {
-                username = request.Email,
-                email = request.Email,
+                username = email,
+                email = email,
                 firstName = parts[0],
                 lastName = parts.Length > 1 ? parts[1] : parts[0],
                 enabled = true,
@@ -97,7 +113,7 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
                 name = request.Name,
                 cpf = request.Document,
                 phone = request.Phone,
-                email = request.Email
+                email = email
             }, ct);
         }
         else
@@ -107,7 +123,7 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
                 name = request.Name,
                 crm = request.Document,
                 specialty = request.Specialty ?? "General",
-                email = request.Email
+                email = email
             }, ct);
         }
 
@@ -115,7 +131,7 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
         [
             new KeyValuePair<string, string>("grant_type", "password"),
             new KeyValuePair<string, string>("client_id", ClientId),
-            new KeyValuePair<string, string>("username", request.Email),
+            new KeyValuePair<string, string>("username", email),
             new KeyValuePair<string, string>("password", request.Password),
         ]);
 
@@ -124,7 +140,17 @@ public sealed class AuthController(IHttpClientFactory httpClientFactory, IConfig
 
         var tokenBody = await tokenResp.Content.ReadAsStringAsync(ct);
         if (!tokenResp.IsSuccessStatusCode)
-            return StatusCode((int)tokenResp.StatusCode, tokenBody);
+        {
+            logger.LogWarning(
+                "Keycloak post-register token request failed. Username={Username} Status={Status} Body={Body}",
+                email, (int)tokenResp.StatusCode, tokenBody);
+            return new ContentResult
+            {
+                StatusCode = (int)tokenResp.StatusCode,
+                Content = tokenBody,
+                ContentType = "application/json"
+            };
+        }
 
         using var json = JsonDocument.Parse(tokenBody);
         var token = json.RootElement.GetProperty("access_token").GetString();

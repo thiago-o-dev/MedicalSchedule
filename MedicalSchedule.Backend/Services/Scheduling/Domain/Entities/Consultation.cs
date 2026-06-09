@@ -7,13 +7,9 @@ namespace Scheduling.Domain.Entities;
 
 public class Consultation : LifeCycleEntity
 {
-    // Maybe this on the future would be nice
-    //IEnumerable<Guid> VetIds;
-    //IEnumerable<Guid> PetIds;
-    //IEnumerable<Guid> OwnerIds;
-
     public Guid VetId { get; private set; }
     public Guid PetId { get; private set; }
+    public Guid OwnerId { get; private set; }
 
     public ConsultationStatus Status { get; private set; }
 
@@ -21,12 +17,14 @@ public class Consultation : LifeCycleEntity
 
     public string? Notes { get; private set; }
 
-    public static Consultation Schedule(Guid petId, Guid vetId, DateTime scheduledAt, string? notes)
+    public static Consultation Schedule(Guid petId, Guid vetId, Guid ownerId, DateTime scheduledAt, string? notes)
     {
         if (petId == Guid.Empty)
             throw new DomainValidationException("Pet is required.");
         if (vetId == Guid.Empty)
             throw new DomainValidationException("Vet is required.");
+        if (ownerId == Guid.Empty)
+            throw new DomainValidationException("Owner is required.");
         if (scheduledAt <= DateTime.UtcNow)
             throw new DomainValidationException("Consultation must be scheduled for a future date and time.");
 
@@ -35,6 +33,7 @@ public class Consultation : LifeCycleEntity
             Id = Guid.NewGuid(),
             PetId = petId,
             VetId = vetId,
+            OwnerId = ownerId,
             ScheduledAt = scheduledAt,
             Status = ConsultationStatus.Scheduled,
             Notes = notes?.Trim(),

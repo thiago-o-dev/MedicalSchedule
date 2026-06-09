@@ -14,6 +14,19 @@ public sealed class GetPetByIdQueryHandler(IPetRepository petRepository)
         var pet = await petRepository.GetByIdAsync(query.PetId, cancellationToken)
             ?? throw new NotFoundException($"Pet '{query.PetId}' not found.");
 
-        return new PetResponse(pet.Id, pet.Name, pet.Species, pet.Breed, pet.BirthDate, pet.IsActive);
+        var ownerships = pet.Ownerships
+            .Select(o => new PetOwnershipResponse(o.OwnerId, o.IsPrimaryOwner))
+            .ToList();
+
+        return new PetResponse(
+            pet.Id,
+            pet.Name,
+            pet.Species,
+            pet.Breed,
+            pet.BirthDate,
+            pet.IsActive,
+            pet.DeletionStatus,
+            pet.DeletionRejectionReason,
+            ownerships);
     }
 }

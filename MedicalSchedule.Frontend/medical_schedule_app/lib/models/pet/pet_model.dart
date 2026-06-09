@@ -1,3 +1,5 @@
+import 'pet_deletion_status_enum.dart';
+import 'pet_ownership_model.dart';
 import 'pet_species_enum.dart';
 
 class PetModel {
@@ -8,6 +10,9 @@ class PetModel {
   final DateTime birthDate;
   final String? primaryOwnerId;
   final bool isActive;
+  final PetDeletionStatus deletionStatus;
+  final String? deletionRejectionReason;
+  final List<PetOwnershipModel> ownerships;
 
   PetModel({
     this.id,
@@ -17,6 +22,9 @@ class PetModel {
     required this.birthDate,
     this.primaryOwnerId,
     this.isActive = true,
+    this.deletionStatus = PetDeletionStatus.none,
+    this.deletionRejectionReason,
+    this.ownerships = const [],
   });
 
   Map<String, dynamic> toJson() {
@@ -33,6 +41,7 @@ class PetModel {
   }
 
   factory PetModel.fromJson(Map<String, dynamic> json) {
+    final ownershipsRaw = json['ownerships'] as List?;
     return PetModel(
       id: json['id'] as String?,
       name: json['name'] as String,
@@ -40,6 +49,14 @@ class PetModel {
       breed: json['breed'] as String,
       birthDate: DateTime.parse(json['birthDate'] as String),
       isActive: json['isActive'] as bool? ?? true,
+      deletionStatus:
+          PetDeletionStatus.fromBackendValue(json['deletionStatus'] as int?),
+      deletionRejectionReason: json['deletionRejectionReason'] as String?,
+      ownerships: ownershipsRaw == null
+          ? const []
+          : ownershipsRaw
+              .map((e) => PetOwnershipModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
   }
 }

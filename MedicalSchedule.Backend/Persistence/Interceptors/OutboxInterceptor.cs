@@ -30,7 +30,7 @@ public sealed class OutboxInterceptor : SaveChangesInterceptor
             {
                 Id = Guid.NewGuid(),
                 Type = domainEvent.GetType().Name,
-                Content = JsonSerializer.Serialize(domainEvent),
+                Content = JsonSerializer.Serialize(domainEvent, domainEvent.GetType()),
                 OccurredOnUtc = DateTime.UtcNow
             })
             .ToList();

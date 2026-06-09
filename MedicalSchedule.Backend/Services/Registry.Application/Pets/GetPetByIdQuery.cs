@@ -10,4 +10,9 @@ public sealed record PetResponse(
     PetSpecies Species,
     string Breed,
     DateOnly BirthDate,
-    bool IsActive);
+    bool IsActive,
+    PetDeletionStatus DeletionStatus,
+    string? DeletionRejectionReason,
+    IReadOnlyList<PetOwnershipResponse> Ownerships);
+
+public sealed record PetOwnershipResponse(Guid OwnerId, bool IsPrimaryOwner);

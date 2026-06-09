@@ -22,4 +22,7 @@ public sealed class VetRepository(RegistryDbContext dbContext) : IVetRepository
 
     public Task<Vet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => dbContext.Vets.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+    public Task<Vet?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+        => dbContext.Vets.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
 }

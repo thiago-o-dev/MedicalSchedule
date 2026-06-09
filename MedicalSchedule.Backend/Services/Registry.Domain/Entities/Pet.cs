@@ -1,4 +1,5 @@
 using Registry.Domain.Enums;
+using Registry.Domain.Events;
 using Registry.Domain.Policies;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
@@ -13,6 +14,8 @@ public class Pet : LifeCycleEntity
     public PetSpecies Species { get; private set; }
     public string Breed { get; private set; } = string.Empty;
     public DateOnly BirthDate { get; private set; }
+    public PetDeletionStatus DeletionStatus { get; private set; } = PetDeletionStatus.None;
+    public string? DeletionRejectionReason { get; private set; }
 
     public IReadOnlyCollection<PetOwnership> Ownerships => _ownerships;
 
@@ -79,4 +82,37 @@ public class Pet : LifeCycleEntity
         _ownerships.Remove(ownership);
     }
 
+    public void RequestDeletion()
+    {
+        if (DeletionStatus == PetDeletionStatus.Deleted)
+            throw new DomainValidationException("Pet is already deleted.");
+        if (DeletionStatus == PetDeletionStatus.PendingDeletion)
+            throw new DomainValidationException("Pet deletion is already pending review.");
+
+        DeletionStatus = PetDeletionStatus.PendingDeletion;
+        DeletionRejectionReason = null;
+        Touch();
+
+        RaiseDomainEvent(new PetDeletionRequestedEvent(Id));
+    }
+
+    public void ConfirmDeletion()
+    {
+        if (DeletionStatus != PetDeletionStatus.PendingDeletion)
+            return;
+
+        DeletionStatus = PetDeletionStatus.Deleted;
+        DeletionRejectionReason = null;
+        Deactivate();
+    }
+
+    public void RejectDeletion(string reason)
+    {
+        if (DeletionStatus != PetDeletionStatus.PendingDeletion)
+            return;
+
+        DeletionStatus = PetDeletionStatus.None;
+        DeletionRejectionReason = reason;
+        Touch();
+    }
 }

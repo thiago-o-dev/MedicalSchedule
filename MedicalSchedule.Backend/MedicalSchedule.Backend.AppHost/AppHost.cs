@@ -38,16 +38,20 @@ var registry =
     builder.AddProject<Projects.Registry_Api>("registry")
         .WithReference(rabbitmq)
         .WithReference(registryDb)
+        .WithReference(keycloak)
         .WaitFor(rabbitmq)
-        .WaitFor(registryDb);
+        .WaitFor(registryDb)
+        .WaitFor(keycloak);
 
 var scheduling =
     builder.AddProject<Projects.Scheduling>("scheduling")
         .WithReference(redis)
         .WithReference(rabbitmq)
         .WithReference(schedulingDb)
+        .WithReference(keycloak)
         .WaitFor(rabbitmq)
-        .WaitFor(schedulingDb);
+        .WaitFor(schedulingDb)
+        .WaitFor(keycloak);
 
 var payments =
     builder.AddProject<Projects.Payments>("payments")
@@ -78,8 +82,7 @@ var gateway =
         .WithReference(payments)
         .WithReference(notifications)
         .WithReference(whatsapp)
-        .WithReference(keycloak)
-        .WaitForStart(keycloak)
+        .WaitFor(keycloak)
         .WaitFor(registry);
 
 builder.Build().Run();

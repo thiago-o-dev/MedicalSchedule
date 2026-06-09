@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../core/config/routes.dart';
-import '../../core/storage/token_storage.dart';
 import '../../models/pet/pet_model.dart';
 import '../../models/vet/vet_model.dart';
 import '../../state/appointment_provider.dart';
 import '../../state/owner_provider.dart';
 import '../../state/pet_provider.dart';
 import '../../state/vet_provider.dart';
+import '../../widgets/api_error_snackbar.dart';
+import '../../widgets/vet_carousel_card.dart';
 
 class ScheduleAppointmentScreen extends ConsumerStatefulWidget {
-  const ScheduleAppointmentScreen({super.key});
+  ScheduleAppointmentScreen({super.key});
 
   @override
   ConsumerState<ScheduleAppointmentScreen> createState() =>
@@ -37,9 +36,9 @@ class _ScheduleAppointmentScreenState
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now().add(const Duration(days: 1)),
+      initialDate: DateTime.now().add(Duration(days: 1)),
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      lastDate: DateTime.now().add(Duration(days: 365)),
     );
     if (picked != null) setState(() => selectedDate = picked);
   }
@@ -57,9 +56,7 @@ class _ScheduleAppointmentScreenState
         selectedPet == null ||
         selectedDate == null ||
         selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all required fields.')),
-      );
+      showApiErrorSnackBar(context, 'Please fill in all required fields.');
       return;
     }
 
@@ -71,19 +68,24 @@ class _ScheduleAppointmentScreenState
       selectedTime!.minute,
     );
 
+    final ownerId = ref.read(currentOwnerProvider).valueOrNull?.id;
+    if (ownerId == null) {
+      showApiErrorSnackBar(context, 'Owner not loaded yet.');
+      return;
+    }
+
     setState(() => loading = true);
     try {
       await ref.read(appointmentRepositoryProvider).scheduleAppointment(
             petId: selectedPet!.id!,
             vetId: selectedVet!.id!,
+            ownerId: ownerId,
             scheduledAt: scheduledAt,
             notes: notesCtrl.text.isNotEmpty ? notesCtrl.text : null,
           );
-      ref.invalidate(appointmentsProvider(null));
+      ref.invalidate(ownerAppointmentsProvider(ownerId));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Appointment scheduled!')),
-        );
+        showSuccessSnackBar(context, 'Appointment scheduled!');
         setState(() {
           selectedVet = null;
           selectedPet = null;
@@ -93,11 +95,7 @@ class _ScheduleAppointmentScreenState
         });
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
+      if (mounted) showApiErrorSnackBar(context, e);
     }
     if (mounted) setState(() => loading = false);
   }
@@ -115,101 +113,104 @@ class _ScheduleAppointmentScreenState
         : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
     final timeLabel = t == null ? 'Pick time *' : t.format(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Schedule Appointment'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: () async {
-              await TokenStorage.clear();
-              if (context.mounted) context.go(Routes.login);
-            },
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Veterinarian *',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          SizedBox(height: 8),
+          SizedBox(
+            height: 160,
+            child: vetsAsync.when(
+              loading: () =>
+                  Center(child: CircularProgressIndicator()),
+              error: (e, _) => Text(e.toString()),
+              data: (vets) {
+                if (vets.isEmpty) {
+                  return Center(child: Text('No veterinarians available.'));
+                }
+                return CarouselView(
+                  itemExtent: 200,
+                  shrinkExtent: 140,
+                  onTap: (i) => setState(() => selectedVet = vets[i]),
+                  children: vets
+                      .map(
+                        (v) => VetCarouselCard(
+                          vet: v,
+                          selected: selectedVet?.id == v.id,
+                        ),
+                      )
+                      .toList(),
+                );
+              },
+            ),
+          ),
+          if (selectedVet != null)
+            Padding(
+              padding: EdgeInsets.only(top: 6),
+              child: Text(
+                'Selected: ${selectedVet!.name}',
+                style: TextStyle(
+                  color: Colors.blue.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          SizedBox(height: 20),
+          petsAsync.when(
+            loading: () =>
+                Center(child: CircularProgressIndicator()),
+            error: (e, _) => Text(e.toString()),
+            data: (pets) => DropdownButtonFormField<PetModel>(
+              value: selectedPet,
+              decoration: InputDecoration(labelText: 'Pet *'),
+              items: pets
+                  .where((p) => p.isActive)
+                  .map(
+                    (p) => DropdownMenuItem(
+                      value: p,
+                      child: Text('${p.name} (${p.species.displayName})'),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (p) => setState(() => selectedPet = p),
+            ),
+          ),
+          SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(dateLabel),
+            trailing: Icon(Icons.calendar_today),
+            onTap: _pickDate,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(timeLabel),
+            trailing: Icon(Icons.access_time),
+            onTap: _pickTime,
+          ),
+          SizedBox(height: 8),
+          TextField(
+            controller: notesCtrl,
+            decoration: InputDecoration(labelText: 'Notes (optional)'),
+            maxLines: 3,
+          ),
+          SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: loading ? null : _submit,
+            child: loading
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text('Schedule'),
           ),
         ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            vetsAsync.when(
-              loading: () =>
-                  const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Text('Error loading vets: $e'),
-              data: (vets) => DropdownButtonFormField<VetModel>(
-                value: selectedVet,
-                decoration: const InputDecoration(
-                  labelText: 'Veterinarian *',
-                ),
-                items: vets
-                    .map(
-                      (v) => DropdownMenuItem(
-                        value: v,
-                        child: Text('${v.name} (${v.specialty})'),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (v) => setState(() => selectedVet = v),
-              ),
-            ),
-            const SizedBox(height: 16),
-            petsAsync.when(
-              loading: () =>
-                  const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Text('Error loading pets: $e'),
-              data: (pets) => DropdownButtonFormField<PetModel>(
-                value: selectedPet,
-                decoration:
-                    const InputDecoration(labelText: 'Pet *'),
-                items: pets
-                    .map(
-                      (p) => DropdownMenuItem(
-                        value: p,
-                        child: Text(
-                          '${p.name} (${p.species.displayName})',
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (p) => setState(() => selectedPet = p),
-              ),
-            ),
-            const SizedBox(height: 8),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(dateLabel),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: _pickDate,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(timeLabel),
-              trailing: const Icon(Icons.access_time),
-              onTap: _pickTime,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: notesCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Notes (optional)',
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: loading ? null : _submit,
-              child: loading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Schedule'),
-            ),
-          ],
-        ),
       ),
     );
   }

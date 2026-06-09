@@ -21,4 +21,13 @@ class OwnerRepository {
     final response = await _service.getOwnerById(id);
     return OwnerModel.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<OwnerModel?> getCurrentOwner() async {
+    try {
+      final response = await _service.getMe();
+      return OwnerModel.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
 }
