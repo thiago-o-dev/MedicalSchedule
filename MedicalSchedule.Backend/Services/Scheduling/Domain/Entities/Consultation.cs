@@ -26,7 +26,7 @@ public class Consultation : LifeCycleEntity
         if (ownerId == Guid.Empty)
             throw new DomainValidationException("Owner is required.");
         if (scheduledAt <= DateTime.UtcNow)
-            throw new DomainValidationException("Consultation must be scheduled for a future date and time.");
+            throw new DomainValidationException($"Consultation must be scheduled for a future date and time. {scheduledAt} must be greater than {DateTime.UtcNow}");
 
         var consultation = new Consultation
         {
