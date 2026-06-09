@@ -15,6 +15,14 @@ public sealed class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasMaxLength(100)
             .IsRequired();
 
+        builder.Property(x => x.DeletionStatus)
+            .HasConversion<int>()
+            .HasDefaultValue(Registry.Domain.Enums.PetDeletionStatus.None)
+            .IsRequired();
+
+        builder.Property(x => x.DeletionRejectionReason)
+            .HasMaxLength(500);
+
         builder.HasMany(x => x.Ownerships)
             .WithOne()
             .HasForeignKey(x => x.PetId);

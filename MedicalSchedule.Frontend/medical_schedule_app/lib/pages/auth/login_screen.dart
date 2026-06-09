@@ -7,7 +7,7 @@ import '../../core/widgets/custom_input.dart';
 import '../../repositories/auth_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -29,7 +29,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _login() async {
     if (_emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Fill in email and password.')),
+        SnackBar(content: Text('Fill in email and password.')),
       );
       return;
     }
@@ -58,21 +58,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Medical Schedule',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               ToggleButtons(
                 isSelected: [_isOwner, !_isOwner],
                 onPressed: (i) => setState(() => _isOwner = i == 0),
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text('Owner'),
@@ -84,7 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               CustomInput(label: 'Email', controller: _emailCtrl),
               CustomInput(
@@ -93,7 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 obscureText: true,
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
 
               CustomButton(
                 text: _loading ? 'Loading...' : 'Login',
@@ -102,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               TextButton(
                 onPressed: () => context.push('/signup'),
-                child: const Text('Create account'),
+                child: Text('Create account'),
               ),
             ],
           ),

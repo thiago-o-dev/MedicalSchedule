@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Registry.Api.Requests;
 using Registry.Features.Pets;
@@ -7,10 +8,12 @@ namespace Registry.Api.Controllers;
 
 [ApiController]
 [Route("api/pets")]
+[Authorize]
 public sealed class PetsController(
     ICommandHandler<RegisterPetCommand, Guid> registerPet,
     ICommandHandler<AddPetOwnerCommand> addPetOwner,
     ICommandHandler<RemovePetOwnerCommand> removePetOwner,
+    ICommandHandler<RequestPetDeletionCommand> requestPetDeletion,
     IQueryHandler<GetAllPetsQuery, IReadOnlyList<PetResponse>> getAllPets,
     IQueryHandler<GetPetByIdQuery, PetResponse> getPetById,
     IQueryHandler<GetPetOwnerQuery, OwnerContactResponse?> getPetOwner) : ControllerBase
@@ -69,6 +72,23 @@ public sealed class PetsController(
             cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpDelete("{petId:guid}")]
+    public async Task<IActionResult> RequestDeletion(
+        Guid petId,
+        CancellationToken cancellationToken)
+    {
+        await requestPetDeletion.HandleAsync(
+            new RequestPetDeletionCommand(petId),
+            cancellationToken);
+
+        return Accepted(new
+        {
+            petId,
+            status = "PendingDeletion",
+            message = "Pet deletion submitted. The Scheduling service is verifying future appointments."
+        });
     }
 
     [HttpGet("{petId:guid}/owner")]

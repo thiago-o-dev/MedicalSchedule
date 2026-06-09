@@ -65,6 +65,9 @@ namespace Scheduling.Infrastructure.Persistence.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("PetId")
                         .HasColumnType("uuid");
 

@@ -1,13 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
+using Registry.Application.Events;
+using Registry.Features.Pets;
 using Registry.Infrastructure.Configuration;
+using Registry.Infrastructure.Messaging;
 using Registry.Infrastructure.Persistence;
 using SharedKernel.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddKeycloakAuthentication();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -32,6 +36,10 @@ builder.Services.Scan(scan => scan
         .AsImplementedInterfaces()
         .WithScopedLifetime());
 
+builder.Services.AddScoped<IDomainEventHandler<PetDeletionApprovedEvent>, PetDeletionApprovedEventHandler>();
+builder.Services.AddScoped<IDomainEventHandler<PetDeletionRejectedEvent>, PetDeletionRejectedEventHandler>();
+builder.Services.AddHostedService<RegistrySagaSubscriptionsService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -48,6 +56,7 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

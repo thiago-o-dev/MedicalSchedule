@@ -5,4 +5,5 @@ namespace Scheduling.Features.Consultations;
 public record GetAllConsultationsQuery(
     Guid? PetId = null,
     Guid? VetId = null,
+    Guid? OwnerId = null,
     ConsultationStatus? Status = null);

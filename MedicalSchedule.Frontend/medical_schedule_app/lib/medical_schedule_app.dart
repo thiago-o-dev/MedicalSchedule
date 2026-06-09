@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'core/routes/app_router.dart';
 
 class MedicalScheduleApp extends StatelessWidget {
-  const MedicalScheduleApp({super.key});
+  MedicalScheduleApp({super.key});
 
   @override
   Widget build(BuildContext context) {

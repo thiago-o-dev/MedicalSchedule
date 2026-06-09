@@ -1,45 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../state/owner_provider.dart';
+import '../../widgets/app_drawer.dart';
 import 'appointments_screen.dart';
 import 'pet_register_screen.dart';
 import 'schedule_appointment_screen.dart';
 
-class OwnerHomeScreen extends StatefulWidget {
-  const OwnerHomeScreen({super.key});
+class OwnerHomeScreen extends ConsumerStatefulWidget {
+  OwnerHomeScreen({super.key});
 
   @override
-  State<OwnerHomeScreen> createState() =>
-      _OwnerHomeScreenState();
+  ConsumerState<OwnerHomeScreen> createState() => _OwnerHomeScreenState();
 }
 
-class _OwnerHomeScreenState
-    extends State<OwnerHomeScreen> {
+class _OwnerHomeScreenState extends ConsumerState<OwnerHomeScreen> {
   int index = 0;
 
-  final pages = [
-    const PetRegisterScreen(),
-    const ScheduleAppointmentScreen(),
-    const AppointmentsScreen(),
+  final _titles = ['My Pets', 'Schedule', 'Appointments'];
+  final _pages = [
+    PetRegisterScreen(),
+    ScheduleAppointmentScreen(),
+    AppointmentsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[index],
+    final ownerAsync = ref.watch(currentOwnerProvider);
+    final owner = ownerAsync.valueOrNull;
 
-      bottomNavigationBar:
-          BottomNavigationBar(
+    return Scaffold(
+      appBar: AppBar(title: Text(_titles[index])),
+      drawer: AppDrawer(
+        role: 'owner',
+        userName: owner?.name,
+        userEmail: owner?.email,
+        userId: owner?.id,
+      ),
+      body: _pages[index],
+      bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
-        onTap: (value) {
-          setState(() {
-            index = value;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pets),
-            label: 'Pets',
-          ),
+        onTap: (value) => setState(() => index = value),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.pets), label: 'Pets'),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'Schedule',

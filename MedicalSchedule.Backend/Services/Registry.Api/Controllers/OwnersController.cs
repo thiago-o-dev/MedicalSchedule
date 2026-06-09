@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Registry.Api.Requests;
 using Registry.Features.Owners;
@@ -7,12 +9,15 @@ namespace Registry.Api.Controllers;
 
 [ApiController]
 [Route("api/owners")]
+[Authorize]
 public sealed class OwnersController(
     ICommandHandler<CreateOwnerCommand, Guid> createOwner,
     IQueryHandler<GetAllOwnersQuery, IReadOnlyList<OwnerResponse>> getAllOwners,
-    IQueryHandler<GetOwnerByIdQuery, OwnerResponse> getOwnerById) : ControllerBase
+    IQueryHandler<GetOwnerByIdQuery, OwnerResponse> getOwnerById,
+    IQueryHandler<GetOwnerByEmailQuery, OwnerResponse> getOwnerByEmail) : ControllerBase
 {
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Create(
         [FromBody] CreateOwnerRequest request,
         CancellationToken cancellationToken)
@@ -28,6 +33,20 @@ public sealed class OwnersController(
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var result = await getAllOwners.HandleAsync(new GetAllOwnersQuery(), cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe(CancellationToken cancellationToken)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email)
+            ?? User.FindFirstValue("email")
+            ?? User.FindFirstValue("preferred_username");
+
+        if (string.IsNullOrWhiteSpace(email))
+            return Unauthorized();
+
+        var result = await getOwnerByEmail.HandleAsync(new GetOwnerByEmailQuery(email), cancellationToken);
         return Ok(result);
     }
 

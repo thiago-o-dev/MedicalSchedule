@@ -1,13 +1,17 @@
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Scheduling.Contracts.Events;
+using Scheduling.Features.Sagas;
 using Scheduling.Infrastructure;
+using Scheduling.Infrastructure.Messaging;
 using Scheduling.Infrastructure.Persistence;
 using SharedKernel.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddKeycloakAuthentication();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -36,6 +40,9 @@ builder.Services.Scan(scan => scan
         .AsImplementedInterfaces()
         .WithScopedLifetime());
 
+builder.Services.AddScoped<IDomainEventHandler<PetDeletionRequestedEvent>, PetDeletionRequestedSagaHandler>();
+builder.Services.AddHostedService<SchedulingSubscriptionsService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -49,6 +56,7 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

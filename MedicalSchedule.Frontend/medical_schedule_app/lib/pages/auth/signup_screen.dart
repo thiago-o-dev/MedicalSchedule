@@ -6,7 +6,7 @@ import '../../core/widgets/custom_input.dart';
 import '../../repositories/auth_repository.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -42,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
         _passwordCtrl.text.isEmpty ||
         (!_isOwner && _specialtyCtrl.text.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Fill in all required fields.')),
+        SnackBar(content: Text('Fill in all required fields.')),
       );
       return;
     }
@@ -75,15 +75,15 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
+      appBar: AppBar(title: Text('Sign Up')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24),
         child: Column(
           children: [
             ToggleButtons(
               isSelected: [_isOwner, !_isOwner],
               onPressed: (i) => setState(() => _isOwner = i == 0),
-              children: const [
+              children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text('Owner'),
@@ -95,7 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ],
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             CustomInput(label: 'Name', controller: _nameCtrl),
             CustomInput(
@@ -114,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
               obscureText: true,
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             CustomButton(
               text: _loading ? 'Loading...' : 'Register',
@@ -123,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             TextButton(
               onPressed: () => context.pop(),
-              child: const Text('Return'),
+              child: Text('Return'),
             ),
           ],
         ),

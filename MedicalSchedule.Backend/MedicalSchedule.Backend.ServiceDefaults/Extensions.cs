@@ -1,6 +1,8 @@
+using MedicalSchedule.Backend.ServiceDefaults.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
@@ -24,6 +26,8 @@ public static class Extensions
         builder.ConfigureOpenTelemetry();
 
         builder.AddDefaultHealthChecks();
+
+        builder.AddProblemDetailsHandling();
 
         builder.Services.AddServiceDiscovery();
 
@@ -107,8 +111,57 @@ public static class Extensions
         return builder;
     }
 
+    public static TBuilder AddKeycloakAuthentication<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        var keycloakBase =
+            builder.Configuration["services:keycloak:https:0"]?.TrimEnd('/')
+            ?? builder.Configuration["Keycloak:BaseUrl"]
+            ?? "https://localhost:8081";
+
+        var realm = builder.Configuration["Keycloak:Realm"] ?? "medical-schedule";
+
+        builder.Services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = $"{keycloakBase}/realms/{realm}";
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters.ValidateAudience = false;
+                options.BackchannelHttpHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+            });
+
+        builder.Services.AddAuthorization();
+
+        return builder;
+    }
+
+    public static TBuilder AddProblemDetailsHandling<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = ctx =>
+            {
+                ctx.ProblemDetails.Extensions.TryAdd("traceId",
+                    System.Diagnostics.Activity.Current?.Id ?? ctx.HttpContext.TraceIdentifier);
+            };
+        });
+
+        builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+
+        return builder;
+    }
+
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
+        app.UseExceptionHandler();
+        app.UseStatusCodePages();
+
         // Adding health checks endpoints to applications in non-development environments has security implications.
         // See https://aka.ms/dotnet/aspire/healthchecks for details before enabling these endpoints in non-development environments.
         if (app.Environment.IsDevelopment())

@@ -16,6 +16,6 @@ public sealed class GetConsultationByIdQueryHandler(ISchedulingUnitOfWork unitOf
             .FirstOrDefaultAsync(x => x.Id == query.ConsultationId, cancellationToken)
             ?? throw new NotFoundException($"Consultation '{query.ConsultationId}' not found.");
 
-        return new ConsultationResponse(c.Id, c.PetId, c.VetId, c.Status, c.ScheduledAt, c.Notes);
+        return new ConsultationResponse(c.Id, c.PetId, c.VetId, c.OwnerId, c.Status, c.ScheduledAt, c.Notes);
     }
 }

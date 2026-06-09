@@ -31,5 +31,7 @@
   <Folder Name="/src/SharedKernel/">
     <Project Path="SharedKernel/SharedKernel.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/MedicalSchedule.Backend.UnitTests/MedicalSchedule.Backend.UnitTests.csproj" />
+  </Folder>
 </Solution>

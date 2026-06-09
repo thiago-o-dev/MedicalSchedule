@@ -8,4 +8,5 @@ public interface IVetRepository
     Task UpdateAsync(Vet vet, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Vet>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Vet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Vet?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 }
