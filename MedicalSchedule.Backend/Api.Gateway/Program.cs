@@ -1,5 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Scalar.AspNetCore;
-using Yarp.ReverseProxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +22,6 @@ builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
     .AddServiceDiscoveryDestinationResolver();
-
-builder.AddDefaultAuthentication();
-
-builder.Services.AddAuthorization();
 
 builder.Services.AddOpenApi();
 
@@ -56,9 +52,6 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -68,8 +61,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapReverseProxy();
-
 app.MapControllers();
-app.MapReverseProxy();
+
+if (app.Environment.IsDevelopment())
+    app.MapOpenApi();
 
 app.Run();
