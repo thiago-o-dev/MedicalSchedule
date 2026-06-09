@@ -9,11 +9,7 @@ builder.AddServiceDefaults();
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
-            .SetIsOriginAllowed(origin =>
-            {
-                var host = new Uri(origin).Host;
-                return host is "localhost" or "127.0.0.1";
-            })
+            .AllowAnyOrigin() // pq é teste viu
             .AllowAnyHeader()
             .AllowAnyMethod()));
 
