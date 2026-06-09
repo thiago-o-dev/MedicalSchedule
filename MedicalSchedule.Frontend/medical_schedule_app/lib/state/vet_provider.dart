@@ -7,11 +7,12 @@ final vetRepositoryProvider = Provider<VetRepository>(
   (ref) => VetRepository(),
 );
 
-final vetsProvider = FutureProvider<List<VetModel>>((ref) {
+final vetsProvider = FutureProvider.autoDispose<List<VetModel>>((ref) {
   return ref.read(vetRepositoryProvider).getVets();
 });
 
-final vetByIdProvider = FutureProvider.family<VetModel, String>((ref, id) {
+final vetByIdProvider =
+    FutureProvider.autoDispose.family<VetModel, String>((ref, id) {
   return ref.read(vetRepositoryProvider).getVetById(id);
 });
 

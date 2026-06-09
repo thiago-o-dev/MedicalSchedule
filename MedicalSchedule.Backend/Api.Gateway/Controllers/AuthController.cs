@@ -106,9 +106,10 @@ public sealed class AuthController(
 
         client.DefaultRequestHeaders.Authorization = null;
 
+        HttpResponseMessage registryResp;
         if (request.IsOwner)
         {
-            await client.PostAsJsonAsync($"{RegistryBase}/api/owners", new
+            registryResp = await client.PostAsJsonAsync($"{RegistryBase}/api/owners", new
             {
                 name = request.Name,
                 cpf = request.Document,
@@ -118,13 +119,31 @@ public sealed class AuthController(
         }
         else
         {
-            await client.PostAsJsonAsync($"{RegistryBase}/api/vets", new
+            registryResp = await client.PostAsJsonAsync($"{RegistryBase}/api/vets", new
             {
                 name = request.Name,
                 crm = request.Document,
                 specialty = request.Specialty ?? "General",
                 email = email
             }, ct);
+        }
+
+        if (!registryResp.IsSuccessStatusCode)
+        {
+            var registryBody = await registryResp.Content.ReadAsStringAsync(ct);
+            logger.LogWarning(
+                "Registry registration failed. Username={Username} Status={Status} Body={Body}. " +
+                "Rolling back Keycloak user {UserId}.",
+                email, (int)registryResp.StatusCode, registryBody, userId);
+
+            await DeleteKeycloakUserAsync(client, userId, ct);
+
+            return new ContentResult
+            {
+                StatusCode = (int)registryResp.StatusCode,
+                Content = registryBody,
+                ContentType = "application/problem+json"
+            };
         }
 
         var form = new FormUrlEncodedContent(
@@ -195,5 +214,30 @@ public sealed class AuthController(
         await client.PostAsync(
             $"{KeycloakBase}/admin/realms/{Realm}/users/{userId}/role-mappings/realm",
             content, ct);
+    }
+
+    private async Task DeleteKeycloakUserAsync(HttpClient client, string userId, CancellationToken ct)
+    {
+        try
+        {
+            var adminToken = await GetAdminTokenAsync(client, ct);
+            if (adminToken is null) return;
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", adminToken);
+
+            await client.DeleteAsync(
+                $"{KeycloakBase}/admin/realms/{Realm}/users/{userId}", ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex,
+                "Failed to roll back Keycloak user {UserId} after Registry failure. " +
+                "Manual cleanup may be required.", userId);
+        }
+        finally
+        {
+            client.DefaultRequestHeaders.Authorization = null;
+        }
     }
 }

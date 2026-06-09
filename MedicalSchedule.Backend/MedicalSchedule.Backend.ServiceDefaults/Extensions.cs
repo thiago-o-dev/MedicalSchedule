@@ -198,7 +198,12 @@ public static class Extensions
                 options.Authority = $"{keycloakBase}/realms/{realm}";
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters.ValidateAudience = false;
-    });
+                options.BackchannelHttpHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+            });
 
         builder.Services.AddAuthorization();
 

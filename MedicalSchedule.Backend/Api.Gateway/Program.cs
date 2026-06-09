@@ -9,11 +9,7 @@ builder.AddServiceDefaults();
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
-            .SetIsOriginAllowed(origin =>
-            {
-                var host = new Uri(origin).Host;
-                return host is "localhost" or "127.0.0.1";
-            })
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod()));
 
@@ -56,10 +52,13 @@ if (app.Environment.IsDevelopment())
         options.AddDocument(
             "Registry API",
             routePattern: "/registry/openapi/v1.json");
+
+        options.AddDocument(
+            "Scheduling API",
+            routePattern: "/scheduling/openapi/v1.json");
     });
 }
 app.UseCors();
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

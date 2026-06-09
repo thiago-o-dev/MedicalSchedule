@@ -1,6 +1,7 @@
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using Scheduling.Contracts.Events;
 using Scheduling.Features.Sagas;
 using Scheduling.Infrastructure;
@@ -54,7 +55,10 @@ using (var scope = app.Services.CreateScope())
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
+{
     app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,3 +1,4 @@
+using Registry.Domain.Policies;
 using SharedKernel.Abstractions;
 using SharedKernel.Exceptions;
 
@@ -33,6 +34,8 @@ public class Owner : LifeCycleEntity
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+
+        OwnerPolicy.EnsureCanCreateOwner(owner);
 
         // owner.RaiseDomainEvent(new OwnerCreatedDomainEvent(owner.Id));
 

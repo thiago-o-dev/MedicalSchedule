@@ -8,5 +8,6 @@ public interface IOwnerRepository
     Task<IReadOnlyList<Owner>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Owner?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Owner?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<Owner?> GetByCpfAsync(string cpf, CancellationToken cancellationToken = default);
     Task<Owner?> GetOwnerByPetIdAsync(Guid petId, CancellationToken cancellationToken = default);
 }

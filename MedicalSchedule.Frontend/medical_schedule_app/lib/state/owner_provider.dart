@@ -7,11 +7,12 @@ final ownerRepositoryProvider = Provider<OwnerRepository>(
   (ref) => OwnerRepository(),
 );
 
-final ownersProvider = FutureProvider<List<OwnerModel>>((ref) {
+final ownersProvider = FutureProvider.autoDispose<List<OwnerModel>>((ref) {
   return ref.read(ownerRepositoryProvider).getOwners();
 });
 
-final ownerByIdProvider = FutureProvider.family<OwnerModel, String>((ref, id) {
+final ownerByIdProvider =
+    FutureProvider.autoDispose.family<OwnerModel, String>((ref, id) {
   return ref.read(ownerRepositoryProvider).getOwnerById(id);
 });
 

@@ -29,6 +29,7 @@ var keycloak = builder.AddKeycloak("keycloak", 8081)
     .WithReference(keycloakDb)
     .WithEnvironment("KC_BOOTSTRAP_ADMIN_USERNAME", "admin")
     .WithEnvironment("KC_BOOTSTRAP_ADMIN_PASSWORD", keycloakPassword)
+    .WithDataVolume()
     .WithRealmImport("./KeycloakRealms")
     .WaitFor(postgres);
 

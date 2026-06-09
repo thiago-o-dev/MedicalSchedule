@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_input.dart';
 import '../../repositories/auth_repository.dart';
+import '../../widgets/api_error_snackbar.dart';
 
 class SignupScreen extends StatefulWidget {
   SignupScreen({super.key});
@@ -41,9 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
         _emailCtrl.text.isEmpty ||
         _passwordCtrl.text.isEmpty ||
         (!_isOwner && _specialtyCtrl.text.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fill in all required fields.')),
-      );
+      showApiErrorSnackBar(context, 'Fill in all required fields.');
       return;
     }
 
@@ -62,11 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (mounted) context.go(_isOwner ? '/owner' : '/vet');
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
-      }
+      if (mounted) showApiErrorSnackBar(context, e);
     } finally {
       if (mounted) setState(() => _loading = false);
     }

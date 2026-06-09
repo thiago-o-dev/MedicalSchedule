@@ -7,16 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.17.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <Compile Remove="Api\**" />
+    <Compile Remove="Contracts\Requests\**" />
+    <Compile Remove="Contracts\Responses\**" />
+    <Content Remove="Api\**" />
+    <Content Remove="Contracts\Requests\**" />
+    <Content Remove="Contracts\Responses\**" />
+    <EmbeddedResource Remove="Api\**" />
+    <EmbeddedResource Remove="Contracts\Requests\**" />
+    <EmbeddedResource Remove="Contracts\Responses\**" />
+    <None Remove="Api\**" />
+    <None Remove="Contracts\Requests\**" />
+    <None Remove="Contracts\Responses\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Endpoints\" />
-    <Folder Include="Api\Mapping\" />
-    <Folder Include="Api\Middleware\" />
-    <Folder Include="Contracts\Requests\" />
-    <Folder Include="Contracts\Responses\" />
+    <PackageReference Include="MailKit" Version="4.17.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
