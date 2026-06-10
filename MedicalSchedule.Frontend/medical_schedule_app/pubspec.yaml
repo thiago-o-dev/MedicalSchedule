@@ -15,6 +15,7 @@ dependencies:
   go_router: ^14.2.0
   flutter_secure_storage: ^9.2.2
   intl: ^0.19.0
+  pattern_box: ^0.5.4
 
 dev_dependencies:
   flutter_test:

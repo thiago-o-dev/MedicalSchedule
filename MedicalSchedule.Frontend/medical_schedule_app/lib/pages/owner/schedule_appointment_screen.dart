@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/pet/pet_model.dart';
@@ -25,6 +26,7 @@ class _ScheduleAppointmentScreenState
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   final notesCtrl = TextEditingController();
+  final carouselController = CarouselController();
   bool loading = false;
 
   @override
@@ -112,7 +114,7 @@ class _ScheduleAppointmentScreenState
         ? 'Pick date *'
         : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
     final timeLabel = t == null ? 'Pick time *' : t.format(context);
-
+    
     return SingleChildScrollView(
       padding: EdgeInsets.all(24),
       child: Column(
@@ -133,10 +135,16 @@ class _ScheduleAppointmentScreenState
                 if (vets.isEmpty) {
                   return Center(child: Text('No veterinarians available.'));
                 }
-                return CarouselView(
-                  itemExtent: 200,
+                return CarouselView.weighted(
+                  flexWeights: [1,2,1],
+                  controller: carouselController,
                   shrinkExtent: 140,
-                  onTap: (i) => setState(() => selectedVet = vets[i]),
+                  scrollDirection: Axis.horizontal,
+                  onTap: (i) => 
+                    setState(() {
+                      carouselController.animateToItem(i, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);;
+                      selectedVet = vets[i];
+                    }),
                   children: vets
                       .map(
                         (v) => VetCarouselCard(

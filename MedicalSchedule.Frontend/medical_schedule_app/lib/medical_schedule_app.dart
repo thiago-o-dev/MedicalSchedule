@@ -10,6 +10,7 @@ class MedicalScheduleApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
+      scrollBehavior: ScrollBehavior(),
     );
   }
 }
