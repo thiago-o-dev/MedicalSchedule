@@ -58,11 +58,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
   final List<int> seeds = [0,8, 22, 25];
-  final int selectedSeed = Random().nextInt(3);
+  final int selectedSeed = Random().nextInt(4);
+  final List<int> seeds2 = [49,102];
+  final int selectedSeed2 = Random().nextInt(2);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomPaint(
+        foregroundPainter: KaleidoscopePainter(color: const Color.fromARGB(255, 229, 224, 255), seed: seeds2[selectedSeed2], repaint: true),
         painter: KaleidoscopePainter(color: const Color.fromARGB(255, 176, 162, 255), seed: seeds[selectedSeed]),
         child: Padding(
           padding: EdgeInsets.all(24),
