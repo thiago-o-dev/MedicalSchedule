@@ -27,6 +27,7 @@ class ApiException implements Exception {
 
     final data = response.data;
     if (data is Map<String, dynamic>) {
+      // Keycloak OAuth token endpoint: { "error": "...", "error_description": "..." }
       final keycloakError = data['error'] as String?;
       final keycloakDesc = data['error_description'] as String?;
       if (keycloakError != null) {
@@ -34,6 +35,15 @@ class ApiException implements Exception {
           statusCode: response.statusCode ?? 401,
           title: keycloakError,
           detail: keycloakDesc ?? keycloakError,
+        );
+      }
+      // Keycloak Admin API: { "errorMessage": "...", "field": "..." }
+      final adminErrorMessage = data['errorMessage'] as String?;
+      if (adminErrorMessage != null) {
+        return ApiException(
+          statusCode: response.statusCode ?? 409,
+          title: 'Conflict',
+          detail: adminErrorMessage,
         );
       }
       return ApiException(

@@ -9,16 +9,16 @@ final petRepositoryProvider = Provider<PetRepository>(
 );
 
 final petsProvider =
-    FutureProvider.family<List<PetModel>, String?>((ref, ownerId) {
+    FutureProvider.autoDispose.family<List<PetModel>, String?>((ref, ownerId) {
   return ref.read(petRepositoryProvider).getPets(ownerId: ownerId);
 });
 
 final petByIdProvider =
-    FutureProvider.family<PetModel, String>((ref, id) {
+    FutureProvider.autoDispose.family<PetModel, String>((ref, id) {
   return ref.read(petRepositoryProvider).getPetById(id);
 });
 
 final petOwnerProvider =
-    FutureProvider.family<OwnerContactModel?, String>((ref, petId) {
+    FutureProvider.autoDispose.family<OwnerContactModel?, String>((ref, petId) {
   return ref.read(petRepositoryProvider).getPetOwner(petId);
 });
