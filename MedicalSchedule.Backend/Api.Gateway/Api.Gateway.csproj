@@ -7,18 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\**" />
+    <Compile Remove="RateLimiting\**" />
+    <Content Remove="Features\**" />
+    <Content Remove="RateLimiting\**" />
+    <EmbeddedResource Remove="Features\**" />
+    <EmbeddedResource Remove="RateLimiting\**" />
+    <None Remove="Features\**" />
+    <None Remove="RateLimiting\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="10.6.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.14.14" />
     <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Auth\" />
-    <Folder Include="Features\Auth\RegisterVet\" />
-    <Folder Include="Features\Auth\RegisterOwner\" />
-    <Folder Include="RateLimiting\" />
   </ItemGroup>
 
   <ItemGroup>

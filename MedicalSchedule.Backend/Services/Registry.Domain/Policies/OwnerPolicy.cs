@@ -1,8 +1,6 @@
 ﻿using Registry.Domain.Entities;
 using SharedKernel.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Registry.Domain.Exceptions;
 
 namespace Registry.Domain.Policies;
 
@@ -17,7 +15,7 @@ public static class OwnerPolicy
 
         if (owner.Email.Split("@").Length != 2)
         {
-            throw new DomainValidationException("Email must have a single domain separator");
+            throw new DomainValidationException("Owner must have single domain separator");
         }
     }
 }

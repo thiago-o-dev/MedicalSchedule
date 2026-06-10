@@ -1,10 +1,45 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Api\Endpoints\**" />
+    <Compile Remove="Api\Mapping\**" />
+    <Compile Remove="Api\Middleware\**" />
+    <Compile Remove="Contracts\Requests\**" />
+    <Compile Remove="Contracts\Responses\**" />
+    <Compile Remove="Domain\Exceptions\**" />
+    <Compile Remove="Domain\Policies\**" />
+    <Compile Remove="Domain\Services\**" />
+    <Content Remove="Api\Endpoints\**" />
+    <Content Remove="Api\Mapping\**" />
+    <Content Remove="Api\Middleware\**" />
+    <Content Remove="Contracts\Requests\**" />
+    <Content Remove="Contracts\Responses\**" />
+    <Content Remove="Domain\Exceptions\**" />
+    <Content Remove="Domain\Policies\**" />
+    <Content Remove="Domain\Services\**" />
+    <EmbeddedResource Remove="Api\Endpoints\**" />
+    <EmbeddedResource Remove="Api\Mapping\**" />
+    <EmbeddedResource Remove="Api\Middleware\**" />
+    <EmbeddedResource Remove="Contracts\Requests\**" />
+    <EmbeddedResource Remove="Contracts\Responses\**" />
+    <EmbeddedResource Remove="Domain\Exceptions\**" />
+    <EmbeddedResource Remove="Domain\Policies\**" />
+    <EmbeddedResource Remove="Domain\Services\**" />
+    <None Remove="Api\Endpoints\**" />
+    <None Remove="Api\Mapping\**" />
+    <None Remove="Api\Middleware\**" />
+    <None Remove="Contracts\Requests\**" />
+    <None Remove="Contracts\Responses\**" />
+    <None Remove="Domain\Exceptions\**" />
+    <None Remove="Domain\Policies\**" />
+    <None Remove="Domain\Services\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
@@ -18,15 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Endpoints\" />
-    <Folder Include="Api\Middleware\" />
-    <Folder Include="Api\Mapping\" />
     <Folder Include="Contracts\Events\" />
-    <Folder Include="Contracts\Responses\" />
-    <Folder Include="Contracts\Requests\" />
-    <Folder Include="Domain\Exceptions\" />
-    <Folder Include="Domain\Services\" />
-    <Folder Include="Domain\Policies\" />
     <Folder Include="Infrastructure\External\" />
     <Folder Include="Infrastructure\Messaging\" />
     <Folder Include="Infrastructure\Persistence\Configurations\" />

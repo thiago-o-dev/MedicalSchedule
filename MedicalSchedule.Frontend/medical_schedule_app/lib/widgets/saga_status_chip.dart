@@ -41,8 +41,7 @@ class _SagaStatusChipState extends State<SagaStatusChip>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.status == PetDeletionStatus.none &&
-        widget.rejectionReason == null) {
+    if (widget.status == PetDeletionStatus.none) {
       return SizedBox.shrink();
     }
 
@@ -57,11 +56,7 @@ class _SagaStatusChipState extends State<SagaStatusChip>
           Colors.grey.shade700,
           Icons.delete_outline,
         ),
-      PetDeletionStatus.none => (
-          'Deletion rejected',
-          Colors.red.shade700,
-          Icons.block,
-        ),
+      PetDeletionStatus.none => throw StateError('unreachable'),
     };
 
     final shouldPulse = widget.status == PetDeletionStatus.pendingDeletion;
@@ -91,22 +86,6 @@ class _SagaStatusChipState extends State<SagaStatusChip>
       ),
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (shouldPulse)
-          ScaleTransition(scale: _pulse, child: chip)
-        else
-          chip,
-        if (widget.rejectionReason != null &&
-            widget.status != PetDeletionStatus.deleted) ...[
-          SizedBox(height: 4),
-          Text(
-            widget.rejectionReason!,
-            style: TextStyle(fontSize: 11, color: Colors.red.shade700),
-          ),
-        ],
-      ],
-    );
+    return shouldPulse ? ScaleTransition(scale: _pulse, child: chip) : chip;
   }
 }

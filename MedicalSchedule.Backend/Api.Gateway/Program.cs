@@ -13,7 +13,7 @@ builder.AddDefaultAuthentication();
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
-            .AllowAnyOrigin() // pq é teste viu
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod()));
 
@@ -73,7 +73,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

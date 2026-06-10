@@ -9,6 +9,7 @@ import '../../state/pet_provider.dart';
 import '../../widgets/api_error_snackbar.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/owner_badge.dart';
+import '../../widgets/pet_deletion_dialog.dart';
 import '../../widgets/saga_status_chip.dart';
 
 class PetDetailScreen extends ConsumerWidget {
@@ -118,29 +119,15 @@ class PetDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     PetModel pet,
   ) async {
-    final ok = await showConfirmDialog(
-      context,
-      title: 'Request deletion?',
-      message:
-          'The Scheduling service will check for future appointments. '
-          'If any exist, deletion will be rejected.',
-      destructive: true,
-      confirmLabel: 'Request',
-    );
-    if (!ok || !context.mounted) return;
+    final deleted = await showPetDeletionDialog(context, pet);
+    if (!context.mounted) return;
 
-    try {
-      await ref.read(petRepositoryProvider).requestPetDeletion(pet.id!);
-      ref.invalidate(petByIdProvider(petId));
-      ref.invalidate(petsProvider(pet.primaryOwnerId));
-      if (context.mounted) {
-        showSuccessSnackBar(
-          context,
-          'Deletion requested. Awaiting Scheduling review...',
-        );
-      }
-    } catch (e) {
-      if (context.mounted) showApiErrorSnackBar(context, e);
+    ref.invalidate(petByIdProvider(petId));
+    ref.invalidate(petsProvider(pet.primaryOwnerId));
+
+    if (deleted) {
+      showSuccessSnackBar(context, 'Pet deleted.');
+      if (context.mounted) Navigator.of(context).pop();
     }
   }
 

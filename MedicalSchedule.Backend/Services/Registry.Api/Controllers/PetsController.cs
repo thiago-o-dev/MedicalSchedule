@@ -92,6 +92,7 @@ public sealed class PetsController(
     }
 
     [HttpGet("{petId:guid}/owner")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetOwner(
         Guid petId,
         CancellationToken cancellationToken)

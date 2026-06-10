@@ -8,8 +8,8 @@ import '../../models/pet/pet_species_enum.dart';
 import '../../state/owner_provider.dart';
 import '../../state/pet_provider.dart';
 import '../../widgets/api_error_snackbar.dart';
-import '../../widgets/confirm_dialog.dart';
 import '../../widgets/pet_card.dart';
+import '../../widgets/pet_deletion_dialog.dart';
 
 class PetRegisterScreen extends ConsumerWidget {
   PetRegisterScreen({super.key});
@@ -65,28 +65,13 @@ class PetRegisterScreen extends ConsumerWidget {
     PetModel pet,
     String? ownerId,
   ) async {
-    final ok = await showConfirmDialog(
-      context,
-      title: 'Request deletion of "${pet.name}"?',
-      message:
-          'The Scheduling service will check for future appointments. '
-          'If any exist, deletion will be rejected.',
-      destructive: true,
-      confirmLabel: 'Request',
-    );
-    if (!ok || !context.mounted) return;
+    final deleted = await showPetDeletionDialog(context, pet);
+    if (!context.mounted) return;
 
-    try {
-      await ref.read(petRepositoryProvider).requestPetDeletion(pet.id!);
-      ref.invalidate(petsProvider(ownerId));
-      if (context.mounted) {
-        showSuccessSnackBar(
-          context,
-          'Deletion requested. Awaiting review...',
-        );
-      }
-    } catch (e) {
-      if (context.mounted) showApiErrorSnackBar(context, e);
+    ref.invalidate(petsProvider(ownerId));
+
+    if (deleted) {
+      showSuccessSnackBar(context, 'Pet deleted.');
     }
   }
 

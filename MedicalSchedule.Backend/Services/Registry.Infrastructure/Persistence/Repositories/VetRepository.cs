@@ -25,4 +25,7 @@ public sealed class VetRepository(RegistryDbContext dbContext) : IVetRepository
 
     public Task<Vet?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         => dbContext.Vets.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
+
+    public Task<Vet?> GetByCrmAsync(string crm, CancellationToken cancellationToken = default)
+        => dbContext.Vets.FirstOrDefaultAsync(x => x.Crm == crm, cancellationToken);
 }

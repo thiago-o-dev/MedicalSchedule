@@ -9,4 +9,5 @@ public interface IVetRepository
     Task<IReadOnlyList<Vet>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Vet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Vet?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<Vet?> GetByCrmAsync(string crm, CancellationToken cancellationToken = default);
 }
