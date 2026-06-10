@@ -9,7 +9,7 @@ class AppointmentCard extends StatelessWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onReschedule;
 
-  AppointmentCard({
+  const AppointmentCard({
     super.key,
     required this.appointment,
     this.onTap,

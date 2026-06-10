@@ -6,7 +6,7 @@ class VetCarouselCard extends StatelessWidget {
   final VetModel vet;
   final bool selected;
 
-  VetCarouselCard({
+  const VetCarouselCard({
     super.key,
     required this.vet,
     this.selected = false,

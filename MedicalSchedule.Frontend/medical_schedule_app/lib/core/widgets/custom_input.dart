@@ -7,7 +7,7 @@ class CustomInput extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
 
-  CustomInput({
+  const CustomInput({
     super.key,
     required this.label,
     required this.controller,

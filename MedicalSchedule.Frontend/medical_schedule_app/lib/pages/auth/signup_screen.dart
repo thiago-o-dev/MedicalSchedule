@@ -11,7 +11,7 @@ import '../../repositories/auth_repository.dart';
 import '../../widgets/api_error_snackbar.dart';
 
 class SignupScreen extends StatefulWidget {
-  SignupScreen({super.key});
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -82,69 +82,74 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Medical ',
-                      style: TextStyle(fontSize: 32),
-                    ),
-                    Text(
-                      'Schedule',
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 56, 0, 109)),
-                    ),
-                  ],
-                ),
-        
-                SizedBox(height: 24),
-
-                OwnerVetToggleButton(
-                  isOwner: _isOwner, 
-                  onPressed: (i) => setState(() => _isOwner = i == 0)
-                  ),
-          
-                SizedBox(height: 24),
-          
-                CustomInput(label: 'Name', controller: _nameCtrl),
-                CustomInput(
-                  label: _isOwner ? 'CPF' : 'CRM',
-                  controller: _documentCtrl,
-                ),
-                CustomInput(label: 'Phone', controller: _phoneCtrl),
-          
-                if (!_isOwner)
-                  CustomInput(label: 'Specialty', controller: _specialtyCtrl),
-          
-                CustomInput(label: 'Email', controller: _emailCtrl),
-                CustomInput(
-                  label: 'Password',
-                  controller: _passwordCtrl,
-                  obscureText: true,
-                ),
-          
-                SizedBox(height: 24),
-          
-                CustomButton(
-                  text: _loading ? 'Loading...' : 'Register',
-                  onPressed: _loading ? () {} : _register,
-                ),
-          
-                SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => context.pop(),
-                  child: Row(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 400.0
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Return'),
-                      Icon(Icons.arrow_back, color: Theme.of(context).primaryColor,)
-                    ]
+                      Text(
+                        'Medical ',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      Text(
+                        'Schedule',
+                        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 56, 0, 109)),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                      
+                  SizedBox(height: 24),
+              
+                  OwnerVetToggleButton(
+                    isOwner: _isOwner, 
+                    onPressed: (i) => setState(() => _isOwner = i == 0)
+                    ),
+                        
+                  SizedBox(height: 24),
+                        
+                  CustomInput(label: 'Name', controller: _nameCtrl),
+                  CustomInput(
+                    label: _isOwner ? 'CPF' : 'CRM',
+                    controller: _documentCtrl,
+                  ),
+                  CustomInput(label: 'Phone', controller: _phoneCtrl),
+                        
+                  if (!_isOwner)
+                    CustomInput(label: 'Specialty', controller: _specialtyCtrl),
+                        
+                  CustomInput(label: 'Email', controller: _emailCtrl),
+                  CustomInput(
+                    label: 'Password',
+                    controller: _passwordCtrl,
+                    obscureText: true,
+                  ),
+                        
+                  SizedBox(height: 24),
+                        
+                  CustomButton(
+                    text: _loading ? 'Loading...' : 'Register',
+                    onPressed: _loading ? () {} : _register,
+                  ),
+                        
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Return'),
+                        Icon(Icons.arrow_back, color: Theme.of(context).primaryColor,)
+                      ]
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

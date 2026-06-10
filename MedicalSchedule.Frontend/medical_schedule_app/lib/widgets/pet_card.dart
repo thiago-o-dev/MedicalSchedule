@@ -9,7 +9,7 @@ class PetCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final bool showActions;
 
-  PetCard({
+  const PetCard({
     super.key,
     required this.pet,
     this.onTap,

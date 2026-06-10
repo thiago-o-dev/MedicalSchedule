@@ -11,7 +11,7 @@ import '../../core/widgets/custom_input.dart';
 import '../../repositories/auth_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -67,58 +67,63 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Padding(
           padding: EdgeInsets.all(24),
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Medical ',
-                      style: TextStyle(fontSize: 32),
-                    ),
-                    Text(
-                      'Schedule',
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 56, 0, 109)),
-                    ),
-                  ],
-                ),
-                
-                SizedBox(height: 24),
-        
-                OwnerVetToggleButton(
-                  isOwner: _isOwner, 
-                  onPressed: (i) => setState(() => _isOwner = i == 0)
-                  ),
-        
-                SizedBox(height: 24),
-        
-                CustomInput(label: 'Email', controller: _emailCtrl),
-                CustomInput(
-                  label: 'Password',
-                  controller: _passwordCtrl,
-                  obscureText: true,
-                ),
-        
-                SizedBox(height: 24),
-        
-                CustomButton(
-                  text: _loading ? 'Loading...' : 'Login',
-                  onPressed: _loading ? () {} : _login,
-                ),
-                SizedBox(height: 20,),
-                TextButton(
-                  onPressed: () => context.push('/signup'),
-                  child: Row(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 400.0
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Register'),
-                      Icon(Icons.person, color: Theme.of(context).primaryColor,)
-                    ]
+                      Text(
+                        'Medical ',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      Text(
+                        'Schedule',
+                        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 56, 0, 109)),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  
+                  SizedBox(height: 24),
+                      
+                  OwnerVetToggleButton(
+                    isOwner: _isOwner, 
+                    onPressed: (i) => setState(() => _isOwner = i == 0)
+                    ),
+                      
+                  SizedBox(height: 24),
+                      
+                  CustomInput(label: 'Email', controller: _emailCtrl),
+                  CustomInput(
+                    label: 'Password',
+                    controller: _passwordCtrl,
+                    obscureText: true,
+                  ),
+                      
+                  SizedBox(height: 24),
+                      
+                  CustomButton(
+                    text: _loading ? 'Loading...' : 'Login',
+                    onPressed: _loading ? () {} : _login,
+                  ),
+                  SizedBox(height: 20,),
+                  TextButton(
+                    onPressed: () => context.push('/signup'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Register'),
+                        Icon(Icons.person, color: Theme.of(context).primaryColor,)
+                      ]
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

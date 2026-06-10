@@ -8,7 +8,7 @@ import '../../state/vet_provider.dart';
 import '../../widgets/appointment_card.dart';
 
 class VetAppointmentsScreen extends ConsumerWidget {
-  VetAppointmentsScreen({super.key});
+  const VetAppointmentsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

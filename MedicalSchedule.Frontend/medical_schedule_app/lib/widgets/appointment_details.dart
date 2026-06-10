@@ -10,7 +10,7 @@ class AppointmentDetails extends StatelessWidget{
   final AsyncValue<VetModel> vetAsync;
   final AsyncValue<PetModel> petAsync;
   
-  AppointmentDetails({
+  const AppointmentDetails({
     super.key,
     required this.appointment,
     required this.petAsync,

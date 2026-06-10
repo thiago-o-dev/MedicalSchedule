@@ -12,7 +12,7 @@ import '../../widgets/api_error_snackbar.dart';
 import '../../widgets/vet_carousel_card.dart';
 
 class ScheduleAppointmentScreen extends ConsumerStatefulWidget {
-  ScheduleAppointmentScreen({super.key});
+  const ScheduleAppointmentScreen({super.key});
 
   @override
   ConsumerState<ScheduleAppointmentScreen> createState() =>
@@ -142,7 +142,7 @@ class _ScheduleAppointmentScreenState
                   scrollDirection: Axis.horizontal,
                   onTap: (i) => 
                     setState(() {
-                      carouselController.animateToItem(i, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);;
+                      carouselController.animateToItem(i, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                       selectedVet = vets[i];
                     }),
                   children: vets

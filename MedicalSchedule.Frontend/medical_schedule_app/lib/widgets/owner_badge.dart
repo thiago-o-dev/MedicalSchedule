@@ -6,7 +6,7 @@ class OwnerBadge extends StatelessWidget {
   final bool isPrimary;
   final VoidCallback? onRemove;
 
-  OwnerBadge({
+  const OwnerBadge({
     super.key,
     required this.name,
     required this.email,

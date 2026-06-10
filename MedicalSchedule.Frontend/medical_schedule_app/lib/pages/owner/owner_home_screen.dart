@@ -8,7 +8,7 @@ import 'pet_register_screen.dart';
 import 'schedule_appointment_screen.dart';
 
 class OwnerHomeScreen extends ConsumerStatefulWidget {
-  OwnerHomeScreen({super.key});
+  const OwnerHomeScreen({super.key});
 
   @override
   ConsumerState<OwnerHomeScreen> createState() => _OwnerHomeScreenState();

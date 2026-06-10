@@ -9,7 +9,7 @@ import '../../state/vet_provider.dart';
 class AppointmentDetailScreen extends ConsumerWidget {
   final String appointmentId;
 
-  AppointmentDetailScreen({super.key, required this.appointmentId});
+  const AppointmentDetailScreen({super.key, required this.appointmentId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

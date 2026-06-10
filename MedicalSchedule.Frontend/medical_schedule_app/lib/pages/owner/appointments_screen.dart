@@ -10,7 +10,7 @@ import '../../widgets/appointment_card.dart';
 import '../../widgets/confirm_dialog.dart';
 
 class AppointmentsScreen extends ConsumerWidget {
-  AppointmentsScreen({super.key});
+  const AppointmentsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

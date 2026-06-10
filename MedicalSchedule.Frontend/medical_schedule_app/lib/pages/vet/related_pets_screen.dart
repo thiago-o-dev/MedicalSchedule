@@ -7,7 +7,7 @@ import '../../state/pet_provider.dart';
 import '../../widgets/pet_card.dart';
 
 class RelatedPetsScreen extends ConsumerWidget {
-  RelatedPetsScreen({super.key});
+  const RelatedPetsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

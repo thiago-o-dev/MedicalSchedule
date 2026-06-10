@@ -6,7 +6,7 @@ class SagaStatusChip extends StatefulWidget {
   final PetDeletionStatus status;
   final String? rejectionReason;
 
-  SagaStatusChip({
+  const SagaStatusChip({
     super.key,
     required this.status,
     this.rejectionReason,

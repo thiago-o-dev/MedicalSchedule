@@ -12,7 +12,7 @@ import '../../widgets/pet_card.dart';
 import '../../widgets/pet_deletion_dialog.dart';
 
 class PetRegisterScreen extends ConsumerWidget {
-  PetRegisterScreen({super.key});
+  const PetRegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,7 +90,7 @@ class _AddPetDialog extends ConsumerStatefulWidget {
   final String ownerId;
   final VoidCallback onSaved;
 
-  _AddPetDialog({required this.ownerId, required this.onSaved});
+  const _AddPetDialog({required this.ownerId, required this.onSaved});
 
   @override
   ConsumerState<_AddPetDialog> createState() => _AddPetDialogState();

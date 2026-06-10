@@ -15,7 +15,7 @@ import '../../widgets/saga_status_chip.dart';
 class PetDetailScreen extends ConsumerWidget {
   final String petId;
 
-  PetDetailScreen({super.key, required this.petId});
+  const PetDetailScreen({super.key, required this.petId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -178,7 +178,7 @@ class PetDetailScreen extends ConsumerWidget {
 
 class _PetHeader extends StatelessWidget {
   final PetModel pet;
-  _PetHeader({required this.pet});
+  const _PetHeader({required this.pet});
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +221,7 @@ class _PetHeader extends StatelessWidget {
 
 class _DetailsCard extends StatelessWidget {
   final PetModel pet;
-  _DetailsCard({required this.pet});
+  const _DetailsCard({required this.pet});
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +266,7 @@ class _CoOwnersList extends ConsumerWidget {
   final AsyncValue<List<OwnerModel>> allOwnersAsync;
   final ValueChanged<String> onRemove;
 
-  _CoOwnersList({
+  const _CoOwnersList({
     required this.pet,
     required this.allOwnersAsync,
     required this.onRemove,

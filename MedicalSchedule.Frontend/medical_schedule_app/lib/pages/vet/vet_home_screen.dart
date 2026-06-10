@@ -7,7 +7,7 @@ import 'related_pets_screen.dart';
 import 'vet_appointments_screen.dart';
 
 class VetHomeScreen extends ConsumerStatefulWidget {
-  VetHomeScreen({super.key});
+  const VetHomeScreen({super.key});
 
   @override
   ConsumerState<VetHomeScreen> createState() => _VetHomeScreenState();

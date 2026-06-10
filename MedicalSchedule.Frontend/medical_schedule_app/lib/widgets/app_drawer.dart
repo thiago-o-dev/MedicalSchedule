@@ -10,7 +10,7 @@ class AppDrawer extends StatelessWidget {
   final String? userEmail;
   final String? userId;
 
-  AppDrawer({
+  const AppDrawer({
     super.key,
     required this.role,
     this.userName,

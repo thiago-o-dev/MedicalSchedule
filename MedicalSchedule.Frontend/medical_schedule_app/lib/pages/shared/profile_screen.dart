@@ -13,7 +13,7 @@ class ProfileScreen extends ConsumerWidget {
   final String role;
   final String userId;
 
-  ProfileScreen({
+  const ProfileScreen({
     super.key,
     required this.role,
     required this.userId,
@@ -32,7 +32,7 @@ class ProfileScreen extends ConsumerWidget {
 
 class _OwnerProfile extends ConsumerWidget {
   final String userId;
-  _OwnerProfile({required this.userId});
+  const _OwnerProfile({required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,7 +62,7 @@ class _OwnerProfile extends ConsumerWidget {
 
 class _VetProfile extends ConsumerWidget {
   final String userId;
-  _VetProfile({required this.userId});
+  const _VetProfile({required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -122,7 +122,7 @@ class _VetProfile extends ConsumerWidget {
 class _Avatar extends StatelessWidget {
   final IconData icon;
   final Color color;
-  _Avatar({required this.icon, required this.color});
+  const _Avatar({required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) => Center(
