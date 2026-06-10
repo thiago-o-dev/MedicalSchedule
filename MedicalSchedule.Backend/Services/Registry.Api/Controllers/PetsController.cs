@@ -91,8 +91,6 @@ public sealed class PetsController(
         });
     }
 
-    // Internal endpoint consumed by the Notifications background service,
-    // which has no user JWT to forward. Not exposed via the Gateway.
     [HttpGet("{petId:guid}/owner")]
     [AllowAnonymous]
     public async Task<IActionResult> GetOwner(
