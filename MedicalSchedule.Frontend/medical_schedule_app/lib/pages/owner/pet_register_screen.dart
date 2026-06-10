@@ -31,30 +31,39 @@ class PetRegisterScreen extends ConsumerWidget {
                 child: Icon(Icons.add),
               ),
       ),
-      body: petsAsync.when(
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(e.toString())),
-        data: (pets) {
-          if (pets.isEmpty) {
-            return Center(
-              child: Text('No pets registered. Tap + to add one!'),
+      body: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/pet_background.png"),
+              fit: BoxFit.cover,
+              opacity: 0.5
+            )
+        ),
+        child: petsAsync.when(
+          loading: () => Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text(e.toString())),
+          data: (pets) {
+            if (pets.isEmpty) {
+              return Center(
+                child: Text('No pets registered. Tap + to add one!'),
+              );
+            }
+            return RefreshIndicator(
+              onRefresh: () async => ref.invalidate(petsProvider(ownerId)),
+              child: ListView.builder(
+                itemCount: pets.length,
+                itemBuilder: (_, i) {
+                  final pet = pets[i];
+                  return PetCard(
+                    pet: pet,
+                    onTap: () => context.push('${Routes.petDetail}/${pet.id}'),
+                    onDelete: () => _requestDeletion(context, ref, pet, ownerId),
+                  );
+                },
+              ),
             );
-          }
-          return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(petsProvider(ownerId)),
-            child: ListView.builder(
-              itemCount: pets.length,
-              itemBuilder: (_, i) {
-                final pet = pets[i];
-                return PetCard(
-                  pet: pet,
-                  onTap: () => context.push('${Routes.petDetail}/${pet.id}'),
-                  onDelete: () => _requestDeletion(context, ref, pet, ownerId),
-                );
-              },
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
