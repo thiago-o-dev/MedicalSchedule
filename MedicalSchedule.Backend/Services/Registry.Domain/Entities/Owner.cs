@@ -24,6 +24,7 @@ public class Owner : LifeCycleEntity
         if (string.IsNullOrWhiteSpace(email))
             throw new DomainValidationException("Email is required.");
 
+
         var owner = new Owner
         {
             Id = Guid.NewGuid(),

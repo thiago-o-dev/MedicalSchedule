@@ -10,4 +10,5 @@ public interface IOwnerRepository
     Task<Owner?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task<Owner?> GetByCpfAsync(string cpf, CancellationToken cancellationToken = default);
     Task<Owner?> GetOwnerByPetIdAsync(Guid petId, CancellationToken cancellationToken = default);
+    Task<Owner?> FindDuplicateAsync(string cpf, string email, CancellationToken cancellationToken = default);
 }

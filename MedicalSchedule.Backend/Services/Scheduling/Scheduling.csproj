@@ -62,6 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Caching\Caching.csproj" />
     <ProjectReference Include="..\..\MedicalSchedule.Backend.ServiceDefaults\MedicalSchedule.Backend.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
     <ProjectReference Include="..\..\Persistence\Persistence.csproj" />

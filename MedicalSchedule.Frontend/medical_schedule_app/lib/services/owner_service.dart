@@ -7,18 +7,18 @@ class OwnerService {
   final Dio _dio = ApiClient.dio;
 
   Future<Response> createOwner(OwnerModel owner) async {
-    return await _dio.post('/api/owners', data: owner.toJson());
+    return await _dio.post('/registry/api/owners', data: owner.toJson());
   }
 
   Future<Response> getOwners() async {
-    return await _dio.get('/api/owners');
+    return await _dio.get('/registry/api/owners');
   }
 
   Future<Response> getMe() async {
-    return await _dio.get('/api/owners/me');
+    return await _dio.get('/registry/api/owners/me');
   }
 
   Future<Response> getOwnerById(String id) async {
-    return await _dio.get('/api/owners/$id');
+    return await _dio.get('/registry/api/owners/$id');
   }
 }

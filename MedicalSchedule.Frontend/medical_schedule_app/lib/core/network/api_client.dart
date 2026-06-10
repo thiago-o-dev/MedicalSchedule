@@ -12,17 +12,18 @@ class ApiClient {
         onRequest: (options, handler) async {
           final token = await TokenStorage.getToken();
           if (token != null) {
+            print('Bearer $token');
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);
         },
         onError: (error, handler) async {
           if (error.response?.statusCode == 401) {
-            await TokenStorage.clear();
+            //await TokenStorage.clear();
           }
 
           final apiException = ApiException.fromDioError(error);
-          handler.reject(
+          return handler.reject(
             DioException(
               requestOptions: error.requestOptions,
               response: error.response,

@@ -16,7 +16,7 @@ public class Consultation : LifeCycleEntity
     public DateTime ScheduledAt { get; private set; }
 
     public string? Notes { get; private set; }
-
+    
     public static Consultation Schedule(Guid petId, Guid vetId, Guid ownerId, DateTime scheduledAt, string? notes)
     {
         if (petId == Guid.Empty)
@@ -26,7 +26,7 @@ public class Consultation : LifeCycleEntity
         if (ownerId == Guid.Empty)
             throw new DomainValidationException("Owner is required.");
         if (scheduledAt <= DateTime.UtcNow)
-            throw new DomainValidationException("Consultation must be scheduled for a future date and time.");
+            throw new DomainValidationException($"Consultation must be scheduled for a future date and time. {scheduledAt} must be greater than {DateTime.UtcNow}");
 
         var consultation = new Consultation
         {
@@ -68,5 +68,14 @@ public class Consultation : LifeCycleEntity
         Touch();
 
         RaiseDomainEvent(new ConsultationRescheduledEvent(Id, PetId, VetId, previous, newScheduledAt));
+    }
+
+    public void Complete()
+    {
+        if (Status != ConsultationStatus.Scheduled)
+            throw new DomainValidationException("Only scheduled consultations can be completed.");
+
+        Status = ConsultationStatus.Completed;
+        Touch();
     }
 }

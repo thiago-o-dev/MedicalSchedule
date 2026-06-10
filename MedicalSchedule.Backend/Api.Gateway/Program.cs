@@ -1,10 +1,14 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 using Yarp.ReverseProxy;
+using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+
+builder.AddDefaultAuthentication();
 
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
@@ -18,34 +22,43 @@ builder.Services.AddControllers();
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    .AddTransforms(builderContext =>
+    {
+        builderContext.AddRequestTransform(transformContext =>
+        {
+            var authHeader =
+                transformContext.HttpContext.Request.Headers.Authorization.ToString();
+
+            if (!string.IsNullOrWhiteSpace(authHeader))
+            {
+                transformContext.ProxyRequest.Headers.Authorization =
+                    System.Net.Http.Headers.AuthenticationHeaderValue.Parse(authHeader);
+            }
+
+            return ValueTask.CompletedTask;
+        });
+    })
     .AddServiceDiscoveryDestinationResolver();
 
-builder.Services.AddAuthorization();
-
 builder.Services.AddOpenApi();
-
-var keycloakBase =
-    builder.Configuration["services:keycloak:https:0"]?.TrimEnd('/')
-    ?? builder.Configuration["Keycloak:BaseUrl"]!;
-
-builder.Configuration["Keycloak:BaseUrl"] = keycloakBase;
-var realm = builder.Configuration["Keycloak:Realm"]!;
-var clientId = builder.Configuration["Keycloak:ClientId"]!;
-
-builder.AddDefaultAuthentication(keycloakBase, realm);
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
         options.Title = "MedicalSchedule Gateway";
+
+        options
+            .AddPreferredSecuritySchemes("Bearer")
+            .AddHttpAuthentication("Bearer", auth =>
+            {
+                auth.Token = "";
+            });
 
         options.AddDocument("v1", "Gateway API");
 
@@ -58,12 +71,12 @@ if (app.Environment.IsDevelopment())
             routePattern: "/scheduling/openapi/v1.json");
     });
 }
+
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapReverseProxy();
-
 app.MapControllers();
 
 app.Run();

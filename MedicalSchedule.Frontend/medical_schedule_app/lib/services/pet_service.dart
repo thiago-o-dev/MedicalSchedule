@@ -7,20 +7,20 @@ class PetService {
   final Dio _dio = ApiClient.dio;
 
   Future<Response> createPet(PetModel pet) =>
-      _dio.post('/api/pets', data: pet.toJson());
+      _dio.post('/registry/api/pets', data: pet.toJson());
 
   Future<Response> getPets({String? ownerId}) => _dio.get(
-        '/api/pets',
-        queryParameters: {if (ownerId != null) 'ownerId': ownerId},
+        '/registry/api/pets',
+        queryParameters: {'ownerId': ?ownerId},
       );
 
-  Future<Response> getPetById(String id) => _dio.get('/api/pets/$id');
+  Future<Response> getPetById(String id) => _dio.get('/registry/api/pets/$id');
 
   Future<Response> getPetOwner(String petId) =>
-      _dio.get('/api/pets/$petId/owner');
+      _dio.get('/registry/api/pets/$petId/owner');
 
   Future<Response> requestPetDeletion(String petId) =>
-      _dio.delete('/api/pets/$petId');
+      _dio.delete('/registry/api/pets/$petId');
 
   Future<Response> addPetOwner(
     String petId, {
@@ -28,10 +28,10 @@ class PetService {
     bool isPrimaryOwner = false,
   }) =>
       _dio.post(
-        '/api/pets/$petId/owners',
+        '/registry/api/pets/$petId/owners',
         data: {'ownerId': ownerId, 'isPrimaryOwner': isPrimaryOwner},
       );
 
   Future<Response> removePetOwner(String petId, String ownerId) =>
-      _dio.delete('/api/pets/$petId/owners/$ownerId');
+      _dio.delete('/registry/api/pets/$petId/owners/$ownerId');
 }

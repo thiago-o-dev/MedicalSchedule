@@ -1,5 +1,6 @@
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Persistence.Extensions;
+using Caching.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Scheduling.Contracts.Events;
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddKeycloakAuthentication();
+builder.AddProblemDetailsHandling();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -23,7 +25,11 @@ var connectionString = builder.Configuration.GetConnectionString("scheduling-db"
 var rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbitmq")
     ?? throw new InvalidOperationException("Connection string 'rabbitmq' not configured.");
 
+var redisConnectionString = builder.Configuration.GetConnectionString("redis")
+    ?? throw new InvalidOperationException("Connection string 'redis' not configured.");
+
 builder.Services.AddPersistence<SchedulingDbContext>(connectionString);
+builder.Services.AddSlotLockService(redisConnectionString);
 builder.Services.AddMessaging(rabbitMqConnectionString);
 builder.Services.AddOutboxWorker<SchedulingDbContext>();
 

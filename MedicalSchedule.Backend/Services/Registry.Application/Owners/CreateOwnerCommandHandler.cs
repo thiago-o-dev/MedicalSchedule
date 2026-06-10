@@ -3,6 +3,7 @@ using Registry.Domain.Entities;
 using Registry.Domain.Exceptions;
 using Registry.Features.Abstractions;
 using SharedKernel.Abstractions;
+using SharedKernel.Exceptions;
 
 namespace Registry.Features.Owners;
 
