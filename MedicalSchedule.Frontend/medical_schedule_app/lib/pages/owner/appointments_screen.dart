@@ -95,13 +95,7 @@ class AppointmentsScreen extends ConsumerWidget {
     );
     if (time == null) return;
 
-    final newDate = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
+    final newDate = date.copyWith(hour: time.hour, minute: time.minute, second: 0);
 
     try {
       await ref
