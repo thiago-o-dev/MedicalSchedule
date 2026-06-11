@@ -6,6 +6,7 @@ class CustomInput extends StatelessWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
+  final String? Function(String?)? validator; // Funcao validadora para os inputs
 
   const CustomInput({
     super.key,
@@ -14,6 +15,7 @@ class CustomInput extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType,
     this.textCapitalization = TextCapitalization.none,
+    this.validator,
   });
 
   @override
@@ -22,12 +24,13 @@ class CustomInput extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         vertical: 8,
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: obscureText,
         keyboardType: keyboardType,
         textCapitalization: textCapitalization,
         autocorrect: false,
+        validator: validator,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(

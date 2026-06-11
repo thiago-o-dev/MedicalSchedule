@@ -18,6 +18,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final _formKey = GlobalKey<FormState>();
   bool _isOwner = true;
   bool _loading = false;
 
@@ -40,15 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> _register() async {
-    if (_nameCtrl.text.isEmpty ||
-        _documentCtrl.text.isEmpty ||
-        _phoneCtrl.text.isEmpty ||
-        _emailCtrl.text.isEmpty ||
-        _passwordCtrl.text.isEmpty ||
-        (!_isOwner && _specialtyCtrl.text.isEmpty)) {
-      showApiErrorSnackBar(context, 'Fill in all required fields.');
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
 
@@ -86,69 +79,103 @@ class _SignupScreenState extends State<SignupScreen> {
               constraints: BoxConstraints(
                 maxWidth: 400.0
               ),
-              child: Column(
+              child: Form(
+                key: _formKey,
+                child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Medical ',
-                        style: TextStyle(fontSize: 32),
-                      ),
-                      Text(
-                        'Schedule',
-                        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 56, 0, 109)),
-                      ),
-                    ],
-                  ),
-                      
-                  SizedBox(height: 24),
-              
-                  OwnerVetToggleButton(
-                    isOwner: _isOwner, 
-                    onPressed: (i) => setState(() => _isOwner = i == 0)
+                        Text('Medical ', style: TextStyle(fontSize: 32)),
+                        Text(
+                          'Schedule',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 56, 0, 109),
+                          ),
+                        ),
+                      ],
                     ),
-                        
-                  SizedBox(height: 24),
-                        
-                  CustomInput(label: 'Name', controller: _nameCtrl),
-                  CustomInput(
-                    label: _isOwner ? 'CPF' : 'CRM',
-                    controller: _documentCtrl,
-                  ),
-                  CustomInput(label: 'Phone', controller: _phoneCtrl),
-                        
-                  if (!_isOwner)
-                    CustomInput(label: 'Specialty', controller: _specialtyCtrl),
-                        
-                  CustomInput(label: 'Email', controller: _emailCtrl),
-                  CustomInput(
-                    label: 'Password',
-                    controller: _passwordCtrl,
-                    obscureText: true,
-                  ),
-                        
-                  SizedBox(height: 24),
-                        
-                  CustomButton(
-                    text: _loading ? 'Loading...' : 'Register',
-                    onPressed: _loading ? () {} : _register,
-                  ),
-                        
-                  SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Return'),
-                        Icon(Icons.arrow_back, color: Theme.of(context).primaryColor,)
-                      ]
+
+                    SizedBox(height: 24),
+
+                    OwnerVetToggleButton(
+                      isOwner: _isOwner,
+                      onPressed: (i) => setState(() => _isOwner = i == 0),
                     ),
-                  ),
-                ],
+
+                    SizedBox(height: 24),
+
+                    CustomInput(
+                      label: 'Name',
+                      controller: _nameCtrl,
+                      textCapitalization: TextCapitalization.words,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Informe o nome' : null,
+                    ),
+                    CustomInput(
+                      label: _isOwner ? 'CPF' : 'CRM',
+                      controller: _documentCtrl,
+                      keyboardType: TextInputType.number,
+                      validator: (v) => v == null || v.isEmpty
+                          ? 'Informe o ${_isOwner ? 'CPF' : 'CRM'}'
+                          : null,
+                    ),
+                    CustomInput(
+                      label: 'Phone',
+                      controller: _phoneCtrl,
+                      keyboardType: TextInputType.phone,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Informe o telefone' : null,
+                    ),
+
+                    if (!_isOwner)
+                      CustomInput(
+                        label: 'Specialty',
+                        controller: _specialtyCtrl,
+                        validator: (v) => v == null || v.isEmpty
+                            ? 'Informe a especialidade'
+                            : null,
+                      ),
+
+                    CustomInput(
+                      label: 'Email',
+                      controller: _emailCtrl,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Informe o email' : null,
+                    ),
+                    CustomInput(
+                      label: 'Password',
+                      controller: _passwordCtrl,
+                      obscureText: true,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Informe a senha' : null,
+                    ),
+
+                    SizedBox(height: 24),
+
+                    CustomButton(
+                      text: _loading ? 'Loading...' : 'Register',
+                      onPressed: _loading ? () {} : _register,
+                    ),
+
+                    SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () => context.pop(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Return'),
+                          Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
