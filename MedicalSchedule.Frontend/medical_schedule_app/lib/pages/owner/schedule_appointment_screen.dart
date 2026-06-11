@@ -63,12 +63,10 @@ class _ScheduleAppointmentScreenState
       return;
     }
 
-    final scheduledAt = DateTime(
-      selectedDate!.year,
-      selectedDate!.month,
-      selectedDate!.day,
-      selectedTime!.hour,
-      selectedTime!.minute,
+    final scheduledAt = selectedDate!.copyWith(
+      hour: selectedTime!.hour,
+      minute: selectedTime!.minute,
+      second: 0,
     );
 
     final ownerId = ref.read(currentOwnerProvider).valueOrNull?.id;
@@ -109,12 +107,10 @@ class _ScheduleAppointmentScreenState
     final ownerId = ref.watch(currentOwnerProvider).valueOrNull?.id;
     final petsAsync = ref.watch(petsProvider(ownerId));
 
-    final d = selectedDate;
-    final t = selectedTime;
-    final dateLabel = d == null
+    final dateLabel = selectedDate == null
         ? 'Pick date *'
-        : DateFormat('dd/MM/yyyy').format(d);
-    final timeLabel = t == null ? 'Pick time *' : t.format(context);
+        : DateFormat('dd/MM/yyyy').format(selectedDate!);
+    final timeLabel = selectedTime == null ? 'Pick time *' : selectedTime!.format(context);
     
     return SingleChildScrollView(
       padding: EdgeInsets.all(24),

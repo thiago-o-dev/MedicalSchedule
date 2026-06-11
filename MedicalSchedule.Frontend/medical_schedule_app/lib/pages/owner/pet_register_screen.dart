@@ -152,10 +152,9 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final d = selectedBirthDate;
-    final birthLabel = d == null
+    final birthLabel = selectedBirthDate == null
         ? 'Pick birth date *'
-        : DateFormat('dd/MM/yyyy').format(d);
+        : DateFormat('dd/MM/yyyy').format(selectedBirthDate!);
 
     return AlertDialog(
       title: Text('Add Pet'),
