@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/owner/owner_model.dart';
 import '../../models/pet/pet_deletion_status_enum.dart';
@@ -225,9 +226,7 @@ class _DetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final d = pet.birthDate;
-    final birthStr =
-        '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+    final birthStr = DateFormat('dd/MM/yyyy').format(pet.birthDate);
     return Card(
       child: Padding(
         padding: EdgeInsets.all(16),

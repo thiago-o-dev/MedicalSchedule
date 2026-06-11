@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import 'pet_deletion_status_enum.dart';
 import 'pet_ownership_model.dart';
 import 'pet_species_enum.dart';
@@ -27,18 +29,13 @@ class PetModel {
     this.ownerships = const [],
   });
 
-  Map<String, dynamic> toJson() {
-    final d = birthDate;
-    final dateStr =
-        '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
-    return {
-      'name': name,
-      'species': species.toBackendValue(),
-      'breed': breed,
-      'birthDate': dateStr,
-      'primaryOwnerId': primaryOwnerId,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'species': species.toBackendValue(),
+        'breed': breed,
+        'birthDate': DateFormat('yyyy-MM-dd').format(birthDate),
+        'primaryOwnerId': primaryOwnerId,
+      };
 
   factory PetModel.fromJson(Map<String, dynamic> json) {
     final ownershipsRaw = json['ownerships'] as List?;

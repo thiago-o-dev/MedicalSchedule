@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:medical_schedule_app/models/appointment/appointment_model.dart';
 import 'package:medical_schedule_app/models/appointment/consultation_status_enum.dart';
 import 'package:medical_schedule_app/models/pet/pet_model.dart';
@@ -17,9 +18,7 @@ class AppointmentDetails extends StatelessWidget{
     required this.vetAsync,
   });
 
-  String _format(DateTime dt) =>
-      '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  String _format(DateTime dt) => DateFormat('dd/MM/yyyy HH:mm').format(dt);
 
   Widget _row(IconData icon, String label, String value) => Padding(
         padding: EdgeInsets.symmetric(vertical: 8),

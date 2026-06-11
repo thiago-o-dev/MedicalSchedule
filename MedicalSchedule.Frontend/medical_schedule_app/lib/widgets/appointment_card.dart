@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/appointment/appointment_model.dart';
 import '../models/appointment/consultation_status_enum.dart';
@@ -17,9 +18,7 @@ class AppointmentCard extends StatelessWidget {
     this.onReschedule,
   });
 
-  String _format(DateTime dt) =>
-      '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  String _format(DateTime dt) => DateFormat('dd/MM/yyyy HH:mm').format(dt);
 
   @override
   Widget build(BuildContext context) {
