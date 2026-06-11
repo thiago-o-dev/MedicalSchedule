@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/pet/pet_model.dart';
 import '../../models/vet/vet_model.dart';
@@ -112,7 +113,7 @@ class _ScheduleAppointmentScreenState
     final t = selectedTime;
     final dateLabel = d == null
         ? 'Pick date *'
-        : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+        : DateFormat('dd/MM/yyyy').format(d);
     final timeLabel = t == null ? 'Pick time *' : t.format(context);
     
     return SingleChildScrollView(

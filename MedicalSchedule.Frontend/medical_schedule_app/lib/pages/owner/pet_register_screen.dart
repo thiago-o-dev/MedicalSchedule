@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/config/routes.dart';
 import '../../models/pet/pet_model.dart';
@@ -154,7 +155,7 @@ class _AddPetDialogState extends ConsumerState<_AddPetDialog> {
     final d = selectedBirthDate;
     final birthLabel = d == null
         ? 'Pick birth date *'
-        : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+        : DateFormat('dd/MM/yyyy').format(d);
 
     return AlertDialog(
       title: Text('Add Pet'),
