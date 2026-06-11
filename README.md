@@ -11,7 +11,8 @@ Registry, Scheduling, Notifications, Payments, WhatsappBot.
 
 ## Como rodar:
 Iniciar o docker desktop e rodar a aplicação backend pelo AppHost.
-O front end será automaticamente iniciado devido uma rotina docker.
+
+O front end pode ser rodado por docker, tem um docker file dentro da pasta do app, ou utilizando o flutter no seu próprio sistema.
 
 # English
 
@@ -29,4 +30,5 @@ Registry, Scheduling, Notifications, Payments, WhatsApp Bot.
 
 ## How to run:
 Start docker desktop and run the aplication backend by the AppHost.
-The front-end will be automatically started due to a docker routine.
+
+The front-end can be run with docker, as there is a dockerfile in the app folder, or by using flutter on your own system.
